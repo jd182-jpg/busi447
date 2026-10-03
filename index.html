@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1f3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>BUSI 447 Prep</title>
+<style>
+:root{
+  --bg:#f4f6fb; --card:#ffffff; --ink:#0f1b2d; --muted:#5b6b82; --line:#dbe2ee;
+  --brand:#1d4ed8; --brand-ink:#ffffff; --navy:#0b1f3a;
+  --ok:#0f9d58; --ok-bg:#e3f6ec; --bad:#d93025; --bad-bg:#fde8e6; --warn-bg:#fff6dd; --warn:#8a6100;
+  --code:#eef2f9;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0a1424; --card:#12203a; --ink:#e8eef9; --muted:#9db0cc; --line:#233556;
+    --brand:#5b8def; --brand-ink:#08142a; --navy:#08142a;
+    --ok:#4cc38a; --ok-bg:#12372a; --bad:#ff7b72; --bad-bg:#3d1b1b; --warn-bg:#3a2f10; --warn:#f2c35b;
+    --code:#0d1a31;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0a1424; --card:#12203a; --ink:#e8eef9; --muted:#9db0cc; --line:#233556;
+  --brand:#5b8def; --brand-ink:#08142a; --navy:#08142a;
+  --ok:#4cc38a; --ok-bg:#12372a; --bad:#ff7b72; --bad-bg:#3d1b1b; --warn-bg:#3a2f10; --warn:#f2c35b;
+  --code:#0d1a31;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.5}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+header{background:var(--navy);color:#fff;padding:calc(12px + env(safe-area-inset-top)) 16px 12px;position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.2px}
+header small{display:block;font-weight:400;opacity:.75;font-size:12px}
+header button{background:rgba(255,255,255,.14);color:#fff;border:0;border-radius:8px;padding:6px 10px;font-size:13px}
+main{max-width:720px;margin:0 auto;padding:16px}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{flex:1;border:0;background:none;color:var(--muted);padding:8px 2px 9px;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button .ic{font-size:20px;line-height:1.1}
+nav button.on{color:var(--brand)}
+h2{font-size:20px;margin:4px 0 12px}
+h3{font-size:16px;margin:18px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px}
+.muted{color:var(--muted)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:12px 14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;text-align:left}
+.btn.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.btn.block{display:block;width:100%;margin-bottom:10px}
+.btn small{display:block;font-weight:400;color:var(--muted);font-size:12.5px;margin-top:2px}
+.btn.primary small{color:inherit;opacity:.85}
+.big{flex:1;padding:18px 10px;font-size:19px;text-align:center;border-radius:14px;font-weight:700}
+.big.t{border-color:var(--ok);color:var(--ok)}
+.big.f{border-color:var(--bad);color:var(--bad)}
+.q{font-size:19px;line-height:1.45;font-weight:600;margin:6px 0 16px}
+.tag{display:inline-block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);background:var(--code);border-radius:6px;padding:2px 7px;margin-right:6px}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:2px 0 14px}
+.bar i{display:block;height:100%;background:var(--brand);transition:width .2s}
+.fb{border-radius:12px;padding:12px 14px;margin:12px 0}
+.fb.ok{background:var(--ok-bg);border:1px solid var(--ok)}
+.fb.bad{background:var(--bad-bg);border:1px solid var(--bad)}
+.fb.note{background:var(--warn-bg);border:1px solid var(--warn);color:var(--ink)}
+.fb b.h{display:block;font-size:15px;margin-bottom:3px}
+.stats{display:flex;gap:8px;margin-bottom:14px}
+.stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px}
+.stat span{font-size:11.5px;color:var(--muted)}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+summary{padding:14px 16px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:20px;color:var(--muted)}
+details[open] summary::after{content:"-"}
+details .body{padding:0 16px 14px}
+details .body p{margin:8px 0}
+details .body ul,details .body ol{padding-left:20px;margin:8px 0}
+details .body li{margin:4px 0}
+pre,code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--code);border-radius:10px;padding:12px;overflow-x:auto;font-size:13.5px;line-height:1.5;margin:10px 0;white-space:pre}
+code{background:var(--code);border-radius:5px;padding:1px 5px;font-size:.92em}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:10px 0}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--code)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.tot td{font-weight:700;background:var(--code)}
+.scroll{overflow-x:auto}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{padding:12px 10px;text-align:center;font-size:14px}
+.opt.right{background:var(--ok-bg);border-color:var(--ok)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad)}
+.field{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}
+.field label{flex:1;font-size:14.5px}
+.field input,.field select{width:130px;font-size:17px;padding:9px 10px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+.field input.ok,.field select.ok{border-color:var(--ok);background:var(--ok-bg)}
+.field input.bad,.field select.bad{border-color:var(--bad);background:var(--bad-bg)}
+.field .hint{display:block;color:var(--muted);font-size:12px}
+.seg{display:flex;background:var(--code);border-radius:10px;padding:3px;margin-bottom:12px;gap:3px;flex-wrap:wrap}
+.seg button{flex:1;border:0;background:none;color:var(--muted);padding:8px 6px;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.flash{min-height:190px;display:flex;flex-direction:column;justify-content:center;cursor:pointer}
+.kbd{font-size:12px;color:var(--muted)}
+.sheet h3{margin-top:14px}
+@media print{header,nav,.noprint{display:none!important} body{background:#fff;color:#000} .card{border:0;padding:0}}
+</style>
+</head>
+<body>
+<header>
+  <h1>BUSI 447 Prep<small>Crane · Midterm Mon Oct 5 · 68 pts</small></h1>
+  <button id="theme" aria-label="toggle theme">Theme</button>
+</header>
+<main id="app"></main>
+<nav id="nav"></nav>
+
+<script>
+/* ============ storage ============ */
+let mem = {};
+const store = {
+  get(){ try{ return JSON.parse(localStorage.getItem('b447')||'{}'); }catch(e){ return mem; } },
+  set(v){ mem = v; try{ localStorage.setItem('b447', JSON.stringify(v)); }catch(e){} }
+};
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const rint = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const f2 = x => (Math.abs(x)<0.005?0:x).toFixed(2);
+const f3 = x => x.toFixed(3);
+const f4 = x => x.toFixed(4);
+
+/* ============ DATA: True / False ============ */
+const TF_PACK = [
+ ["An increase in net working capital reduces free cash flow in the year it occurs.",true,"Cash goes into inventory and receivables.","FCF"],
+ ["The appropriate beta for valuing a new project is the beta of the firm undertaking it.",false,"Use a pure-play comparable. The firm's own beta describes its existing business, not the project.","Risk"],
+ ["It is never optimal to exercise an American call early on a stock that pays no dividends.",true,"A dividend is the only thing that makes early exercise optimal.","Options"],
+ ["Using forward prices to forecast revenue and then discounting at the project's WACC overstates the project's value.",false,"It UNDERSTATES value. A forward price is already a certainty equivalent, so a risk-adjusted rate charges for risk twice.","Risk"],
+ ["A terminal value computed as a growing perpetuity at the end of year 5 is already stated in today's dollars.",false,"It is dated at year 5 and must still be discounted back five periods.","TV"],
+ ["The risk-neutral probability q is the market's best estimate of the probability that the underlying rises.",false,"q is a pricing weight, not a belief. The physical probability never enters the price.","Options"],
+ ["Unlevering a comparable firm's equity beta produces a number smaller than that equity beta.",true,"Unlevering strips out financial risk, so the asset beta is always below the equity beta.","Risk"],
+ ["A project with a higher IRR than another project necessarily adds more value to the firm.",false,"IRR is a ratio and hides scale. A 40% return on $1 adds less value than 15% on $100.","NPV/IRR"],
+ ["Adding an abandonment option makes the project-plus-option less risky than the project alone.",true,"The option truncates the downside. The bundle is safer; the option alone is riskier.","Real options"],
+ ["Net working capital committed to a project has no tax consequences.",true,"NWC is a timing effect only. Its cost is the time value of money on the tied-up balance.","FCF"],
+ ["Under MM with no corporate taxes, a firm can lower its WACC by issuing debt and repurchasing equity.",false,"The cost of equity rises exactly enough to offset the heavier debt weight. WACC is flat.","Cap structure"],
+ ["A cash flow whose variation is entirely idiosyncratic should be discounted at the risk-free rate.",true,"Beta is zero, so no risk premium is earned no matter how volatile the cash flow is.","Risk"],
+ ["Increasing a binomial tree from 2 steps to 20 steps gives a more precise estimate of the same value.",true,"More steps converge toward Black-Scholes; they do not change the underlying value.","Options"],
+ ["Interest expense is excluded from free cash flow, but the interest tax shield is still captured in the tax line of the FCF build.",false,"Taxes in FCF are computed as if unlevered. The shield lives in the discount rate, or under APV in a separate term.","FCF"],
+ ["Black-Scholes is an appropriate method for valuing an option to abandon a project at any point over the next three years.",false,"Abandonment at any point is American. Black-Scholes cannot handle early exercise. Use a binomial tree.","Real options"],
+ ["The main reason the long-run growth rate g must be small is mathematical: the perpetuity formula breaks down as g approaches r.",false,"The reason is economic: saturation and competition. No firm outgrows the economy forever.","TV"],
+ ["Under MM with corporate taxes, firm value rises as leverage rises.",true,"V_L = V_U + t_C D under the stated assumptions.","Cap structure"],
+ ["A zero-NPV project destroys shareholder value and should be rejected.",false,"A zero-NPV project earns exactly its risk-adjusted required return. It is acceptable.","NPV/IRR"],
+ ["Observed bankruptcy costs are large enough to explain why most US public firms carry so little debt.",false,"Crane's point exactly: bankruptcy costs are far too small, and roughly 30% of US public firms have zero leverage.","Cap structure"],
+ ["If land the firm already owns will be used for a project, it should enter the analysis at its current market value.",true,"Opportunity cost at market value, never historical cost.","FCF"],
+ ["The exit multiple method and the growing perpetuity method are fundamentally different approaches to terminal value.",false,"They are the same thing. The multiple equals 1/(r-g).","TV"],
+ ["A call option's value is at least the maximum of zero and the underlying price minus the strike.",true,"Otherwise you could buy the option, exercise, and arbitrage the difference.","Options"],
+ ["In a recombining binomial tree, N steps produce 2 to the power N terminal nodes.",false,"Recombination gives N+1 terminal nodes, which is why trees stay tractable.","Options"],
+ ["In a growth-option structure, the first project is itself the option being valued.",false,"The first project is the PREMIUM. The option is the right to launch the second.","Real options"],
+ ["A dual-fuel power plant's switching flexibility is free, because no cash is paid at the moment of switching.",false,"The premium was paid at construction, since a dual-fuel plant costs more to build than a single-fuel one.","Real options"],
+ ["The growing perpetuity formula for terminal value requires that g be less than r.",true,"Otherwise the denominator is zero or negative.","TV"],
+ ["Under APV you value the project as if all-equity financed and then add the value of financing side effects.",true,"That is the definition of adjusted present value.","Cap structure"],
+ ["For an all-equity firm, the equity beta is the asset beta.",true,"No leverage to strip out, so the equity beta is the asset beta.","Risk"],
+ ["When a firm uses an asset it already owns in a project, no cash leaves the firm, so there is no cost to include.",false,"Using the asset means giving up the ability to sell or lease it. That forgone value is a real cost at market value.","FCF"],
+ ["Expected bankruptcy cost equals the cost of bankruptcy multiplied by the probability of bankruptcy.",true,"Both terms matter; leverage raises the probability, and the cost term is what makes the probability matter.","Cap structure"],
+];
+const TF_EXTRA = [
+ ["Money already spent on a feasibility study last year should be included in the project's cash flows if the amount is large.",false,"Sunk. It is unchanged by the decision, so it is out no matter how big.","FCF"],
+ ["If a new store steals sales from an existing store, the lost sales should be subtracted from the project's cash flows.",true,"Cannibalization is incremental to the firm, so it enters as a negative.","FCF"],
+ ["Corporate overhead that is allocated to a project but does not change in total should be included in FCF.",false,"Not incremental. The word 'allocated' is the tell.","FCF"],
+ ["Depreciation is a cash expense, so it is subtracted from NOPAT to get free cash flow.",false,"It is non-cash. It only matters because it lowers taxes, so you subtract it to find EBIT, tax it, then ADD it back.","FCF"],
+ ["Principal repayment on project debt is excluded from FCF, because including it would double count the financing.",true,"Financing flows (interest, principal, dividends, share issues) are all out.","FCF"],
+ ["After-tax salvage equals the sale price minus the tax rate times (sale price minus book value).",true,"After-tax salvage = P - t(P - B). If fully depreciated, B is zero and the whole price is taxable.","FCF"],
+ ["A 12x terminal exit multiple on cash flow implies a view that r minus g is about 8.3 percent.",true,"Multiple = 1/(r-g). 1/12 is about 8.3%. A multiple is a view on r and g in disguise.","TV"],
+ ["Large positive NPV on a project is strong evidence the project is great and should be accepted without further checks.",false,"A large positive NPV is a reason to check your model. If you cannot name the competitive advantage and the specific non-market input, the number is probably wrong.","NPV/IRR"],
+ ["For a 25-year project, the CAPM risk-free rate should be a long-run Treasury rate, not a short-term bill.",true,"Match the maturity of the cash flows. Never use a trailing window contaminated by one episode.","TV"],
+ ["IRR is additive across projects, so the IRR of a portfolio is the sum of the IRRs of its projects.",false,"NPV is additive and reflects scale. IRR is not additive.","NPV/IRR"],
+ ["Because an option can lose at most its premium, it is a low-risk asset and should be discounted at a low rate.",false,"'Most you can lose is the premium' is not 'low risk'. An expired option returns -100%. Its risk changes continuously, so no single discount rate works.","Options"],
+ ["Pricing an option with the binomial model requires an estimate of the stock's expected return.",false,"It needs only u, d and the risk-free rate. The expected return (and any risk premium) never enters.","Options"],
+ ["All else equal, higher volatility of the underlying raises the value of an option.",true,"Option value requires volatility. With zero volatility, flexibility is worth zero.","Options"],
+ ["In the four-step binomial procedure, payoffs are computed at every node, then q is found.",false,"Payoffs go at the FINAL nodes only. Interior nodes are filled by working backward with q.","Options"],
+ ["The risk-neutral probability q is computed as (1 + r_f - d) / (u - d).",true,"q = (r* - d)/(u - d). It is just where the risk-free factor sits between d and u.","Options"],
+ ["An option to expand is a put option.",false,"Expansion is a CALL: you exercise when things go WELL, by paying the expansion cost K to get the value S of the extra capacity.","Real options"],
+ ["An option to abandon is a put option, where the strike is the salvage or exit value.",true,"You exercise when things go badly, by walking away and receiving K.","Real options"],
+ ["A real option is valuable whenever a decision can be made later, even if there is no uncertainty at all.",false,"Two ways there is no value: no decision remains, or no volatility. No volatility means the option is worth zero.","Real options"],
+ ["If the first project in a growth-option structure has negative NPV, it should never be launched.",false,"Launch project one if NPV(project one) + value of the project-two call is greater than zero.","Real options"],
+ ["A naive decision tree that discounts a downside-protected payoff at the project's cost of capital understates the option's value.",true,"Downside protection makes the payoff safer, so the project's own cost of capital is too high. The tree understates the option.","Real options"],
+ ["A manager who makes deliberately conservative forecasts is acting in shareholders' interest.",false,"Conservative means wrong. Shading down rejects good projects, shading up accepts bad ones. Crane wants an unbiased expectation.","Crane"],
+ ["Taking on more debt raises the cost of equity because the same swings in asset value fall on a smaller equity base.",true,"Lenders hold a fixed claim paid first, so the swing lands on equity.","Cap structure"],
+ ["With corporate taxes and perpetual debt, the cost of capital r_L = r_A(1 - t_C D/V) falls as leverage rises.",true,"That is the WACC form of V_L = V_U + t_C D.","Cap structure"],
+ ["APV is required when the debt amortizes on a fixed schedule, because WACC assumes a stable target D/V.",true,"WACC applies one rate to every period. Changing leverage or tax rate means value unlevered and add the period-by-period shields.","Cap structure"],
+ ["Trade-off theory predicts 100 percent debt if only taxes are considered, and zero debt if only bankruptcy costs are considered.",true,"Only both ingredients together give an interior optimum.","Cap structure"],
+ ["Under MM with no taxes, V_L = V_U regardless of the debt-equity mix.",true,"Pumpkin pie: slicing differently does not make more pie. The asset does not care who financed it.","Cap structure"],
+ ["At the down node of an abandonment tree, you abandon if the exit value exceeds the continuing value of the project.",true,"The option pays max(0, exit value - project value). Down node: exit 44 vs value 35 pays 9.","Real options"],
+ ["A forward price that is below the expected future spot price reflects the time value of money.",false,"No cash changes hands at signing, so time value is not involved. The gap is the risk premium.","Risk"],
+ ["In the certainty equivalent approach, the 'b' used is a cash flow beta measured in dollars (covariance with the market return over market variance).",true,"Not a return beta. CE = E[CF] - b(E[r_m] - r_f), then PV = CE/(1 + r_f).","Risk"],
+ ["A diversified shareholder demands a risk premium for a project's idiosyncratic risk, such as the outcome of a binary FDA decision.",false,"Diversifiable risk is free to bear, so nobody pays you to bear it. Discount at r_f if its beta is zero.","Risk"],
+ ["Terminal value computed at the end of year T is still discounted back T periods.",true,"TV is dated at T. It gets discounted like any cash flow at time T.","TV"],
+ ["Both risk adjustments, a higher discount rate and a haircut on the cash flows, can be applied together for extra safety.",false,"Risk goes in the numerator OR the denominator, never both. Doing both is double discounting and understates value.","Risk"],
+];
+const TF = [].concat(
+  TF_PACK.map((x,i)=>({id:'p'+(i+1),q:x[0],a:x[1],why:x[2],tag:x[3],src:'pack'})),
+  TF_EXTRA.map((x,i)=>({id:'x'+(i+1),q:x[0],a:x[1],why:x[2],tag:x[3],src:'extra'}))
+);
+
+/* ============ DATA: Real option identification ============ */
+const OPT_TYPES = {
+  delay:["Timing / delay","Call"], abandon:["Abandon","Put"], expand:["Expand","Call"], contract:["Contract","Put"],
+  growth:["Growth / follow-on","Call"], switch:["Switch","Call on the spread"], extend:["Extend / renew","Call"],
+  none:["No option","-"], zero:["Option worth ~0","-"]
+};
+const OPTS = [
+ ["A pharma company holds a patent with 8 years left and can build the manufacturing plant whenever it chooses before expiry.","delay","S: PV of the developed drug business. K: plant construction cost. Call (American). Dividend analogue: the patent clock, since each year of waiting permanently destroys a year of monopoly profits."],
+ ["An airline leases 20 planes with a clause allowing it to hand them back to the lessor after year 3, penalty free.","abandon","S: going-concern value of operating the planes. K: PV of the lease payments avoided by walking away. Put. You exercise when flying is losing money."],
+ ["A software firm launches a first product it expects to lose money on. The product establishes the platform a much larger second product would run on.","growth","S: PV of the second product's cash flows. K: investment to launch the second product. Call. The first product is the PREMIUM, not the option."],
+ ["A power plant is built to burn either natural gas or fuel oil, and can switch whenever the price spread favors one.","switch","S: value of running on the cheaper fuel. K: value on the current fuel plus switching cost. Call on the spread (a strip of options). The premium was paid at construction."],
+ ["A mine is designed so a second processing line can be added later for $40M, raising output 50 percent.","expand","S: PV of the cash flows from the extra 50 percent of output. K: $40M. Call."],
+ ["A restaurant chain signs a 10-year fixed-rent lease. No early termination, no renewal option, no expansion, rent locked at signing.","none","No option. Nothing is left to decide. Everything is locked at signing, so ordinary DCF is the right tool. This is Crane's 'optionality as a crutch' warning in test form."],
+ ["A manufacturer's supply contract lets it cut order volume by up to 50 percent on 90 days notice if demand falls.","contract","S: value of the output from the marginal 50 percent. K: input costs on that 50 percent, released. Put. Exercise when K exceeds S."],
+ ["A biotech can license its compound to a larger partner for a pre-agreed fee if its own trials disappoint.","abandon","S: value of developing the compound alone. K: the pre-agreed licence fee. Put. You take the fee when your own trials go badly."],
+ ["A retailer signs a lease that includes the right to renew for five more years at a rent fixed today.","extend","S: market value of the leasehold in five years. K: the rent fixed today. Call. Renew only if market rents have risen. A timing call."],
+ ["A developer can build on a vacant lot now or in a year. Property values in this market have been flat for thirty years with negligible volatility.","zero","A real option worth approximately zero. The decision exists, so there is an option, but with no volatility there is no value. This is a different failure from 'no option'."],
+ ["A shipping firm can sell a vessel for scrap if freight rates collapse.","abandon","S: going-concern value of the vessel earning freight. K: scrap value. Put. Exercise when things go badly."],
+ ["An oil company buys acreage leases that give it the right, but not the obligation, to drill any time in the next 5 years.","delay","S: PV of the developed field. K: drilling cost. Call (American). Dividend analogue: production and revenue forgone while waiting."],
+ ["A utility signs a take-or-pay contract to deliver a fixed quantity at a fixed price for 10 years, with no volume flexibility and no early exit.","none","No option. All terms are fixed at signing, so DCF applies."],
+];
+
+/* ============ DATA: concept cards ============ */
+const CARDS = [
+ ["Free cash flow excludes interest even though interest is a real cash payment. Explain why.","Because financing is already priced into the discount rate. WACC reflects the cheapness of debt, so subtracting interest from the cash flows as well charges for the debt twice. Taxes in an FCF build are computed as though the firm has no debt at all."],
+ ["A forward price and an expected spot price differ. What does the difference represent, and what does it imply for the discount rate?","The gap is the risk premium, not time value, since no cash changes hands at signing. The forward is already a certainty equivalent, so discount forward-based revenue at the risk-free rate. Using a risk-adjusted rate takes the premium twice and understates value."],
+ ["Why can an option's expected payoff not be discounted at a single rate?","Because the option's risk changes continuously as the underlying moves. Deep in the money it behaves like the stock; far out of the money it is heavily levered. No single beta, so no single defensible discount rate."],
+ ["Distinguish \"there is no option here\" from \"the option is worth nothing.\"","\"No option\": no decision remains open, so ordinary DCF is correct and no value should be added. \"Worth nothing\": a decision exists but the underlying has no volatility, so flexibility has no value. Both are legitimate conclusions."],
+ ["In Arundel, why divide total value by all 99 films rather than the 26 you would actually exercise?","You must buy every right and do not know in advance which films will succeed. Dividing by 26 assumes perfect foresight. The 26 is a forecast of how many you expect to exercise, not a set you can select in advance."],
+ ["State a condition under which WACC is invalid and APV is required.","WACC applies one rate to every period, which requires a stable target D/V. If debt amortizes on a fixed schedule, or the tax rate changes between years, capital structure is not stable. Value the project unlevered and add period-by-period tax shields. That is APV."],
+ ["Why is the risk-neutral probability not a probability?","It is the position of the risk-free growth factor on the interval between d and u, not anyone's belief. It is the weight that makes the no-arbitrage algebra work. The true probability is typically different and the option price does not depend on it."],
+ ["A colleague says their model is deliberately conservative. What is Crane's objection?","Conservative means wrong. Shading estimates down rejects good projects; shading up accepts bad ones. Both harm shareholders. He wants an unbiased expectation. Where value sits in a few extreme outcomes, shrinking the tail destroys the answer."],
+ ["Four questions to identify a real option?","1) What decision can be made later that nobody is required to make? 2) What do you get on exercise (S, a dollar value)? 3) What do you pay or receive (K)? 4) Would you do it when things go WELL (call) or BADLY (put)?"],
+ ["Method-selection decision: which tool, when?","Managerial flexibility, a decision someone can make later: binomial tree. Risk quoted in a market (like a forward curve): certainty equivalent, discount at r_f. Neither: risk-adjusted rate from pure-play comps; stable target D/V means WACC, changing leverage or tax rate means APV."],
+ ["Two line items test: how do you decide if a number is in or out of FCF?","1) Is it money moving between the firm and someone who financed it (interest, principal, dividends, share issues)? If yes, OUT. 2) Would it be the same if the project never happened? If yes, OUT (sunk costs, allocated overhead, existing salaries)."],
+ ["Land the firm already owns will be used. Bought for $3M in 2019, worth $5M today. What goes in FCF?","$5M at t = 0, as an outflow. Opportunity cost at current market value: building means not selling it. The $3M historical price is sunk and irrelevant."],
+ ["What does depreciation do in an FCF build?","It is non-cash, so it cannot be in the forecast. But it lowers the tax bill, and tax is cash. So subtract it to get EBIT, tax that, then add it back. Forgetting the add-back understates FCF by the full depreciation."],
+ ["After-tax salvage formula, and what if the asset is fully depreciated?","After-tax salvage = P - t(P - B). If depreciated to zero, B = 0, so after-tax salvage = P(1 - t). Example: sell for 8 at 25% tax = 8 - 0.25(8) = 6."],
+ ["How do you treat net working capital in FCF?","Model the CHANGE, not the level. Investment at t = 0 (an outflow), recovered at the end. It has no tax effect. Its only cost is the time value of money on the tied-up balance."],
+ ["What must a claim 'financing creates value' name?","A violated MM assumption from the five: no taxes, no transaction costs, no bankruptcy costs, no agency costs, perfect information. Any claim that financing creates value must name which one is violated."],
+ ["Why must g be small? (the right answer)","The economic reason: saturation and competition. No firm grows faster than the economy forever because it would eventually become the economy. Do NOT answer 'because the formula breaks down.'"],
+ ["Growth options: first project NPV -46.45, Mark II call worth 55.27. What do you do?","Launch the money-losing first project. Decision rule: launch project one if NPV(project one) + value of the project-two call exceeds zero. Here -46.45 + 55.27 > 0."],
+ ["Why does adding an option change the discount rate of the project?","Adding an option changes the cash flows, which changes the risk, so the comparable's rate no longer applies. Crane's airline case: 21% becomes 16.6% once abandonment is attached. The bundle is SAFER than the project alone; the option alone is riskier than either."],
+ ["What does Crane say about the trade-off theory of capital structure?","'Incredibly elegant... and does not fit the data at all.' Bankruptcy costs are far too small to explain observed leverage. About 30% of US public firms carry zero debt. Interest deductibility is also a policy choice (Belgium's notional interest deduction is the natural experiment)."],
+];
+
+/* ============ LEARN content ============ */
+const LEARN = [
+ ["The exam at a glance", `
+<p><b>68 points, 60 minutes.</b> Q1 is six T/F (18 pts, 3 each). Q2 is one project: Part A DCF (25) and Part B abandonment option (25).</p>
+<ul>
+<li>Minutes 0-10: read Q2 fully, circle every dollar figure, mark each "in" or "out" in the margin.</li>
+<li>Minutes 10-25: Q1. Explanations are one clause, not a paragraph.</li>
+<li>Minutes 25-50: Q2 Part A. Write labeled rows first.</li>
+<li>Minutes 50-70: Q2 Part B. Draw the tree.</li>
+<li>Last 5: did you answer the actual question? "Should they build it?" needs <b>yes or no</b>.</li>
+</ul>
+<p>Every discount factor and up/down factor is printed. No exponents, no square roots. Wrong number with work = partial credit. Right number with no work = <b>zero</b>.</p>
+<div class="fb note"><b class="h">T/F attack plan</b>Look for the single mistake the statement is hiding: sunk cost, double counting risk, historical vs market value, probability vs pricing weight, "necessarily", "always", "never". Then write the one-clause reason.</div>`],
+ ["Part A: build the FCF", `
+<p>Write these row labels down the left side <b>before</b> computing. Every labeled row earns credit even if a number is off.</p>
+<pre>Revenue
+- Operating costs
+- Depreciation
+= EBIT
+x (1 - tax rate)
+= NOPAT
++ Depreciation
+- Change in NWC
+- CAPX
++ After-tax salvage
+= FREE CASH FLOW
+x Discount factor
+= PV</pre>
+<p>Separate line for <b>t = 0</b>: investment + opportunity cost of owned assets + initial NWC. Sum the PVs, add the t = 0 figure, state NPV, answer in words.</p>
+<p>The NWC recovery (and after-tax salvage) lands in the <b>final year</b>.</p>
+<h3 style="margin-top:12px">In or out?</h3>
+<table><tr><th>Item</th><th>In/Out</th><th>Why</th></tr>
+<tr><td>Feasibility study paid last year</td><td>Out</td><td>Sunk</td></tr>
+<tr><td>Land already owned</td><td><b>In at market</b></td><td>Opportunity cost</td></tr>
+<tr><td>Historical price of that land</td><td>Out</td><td>Sunk</td></tr>
+<tr><td>Interest on project debt</td><td>Out</td><td>Financing, in the discount rate</td></tr>
+<tr><td>Principal repayment</td><td>Out</td><td>Financing</td></tr>
+<tr><td>Stolen sales from an existing store</td><td>In, negative</td><td>Cannibalization</td></tr>
+<tr><td>Allocated overhead (total unchanged)</td><td>Out</td><td>Not incremental</td></tr>
+<tr><td>New hire required</td><td>In</td><td>Incremental</td></tr>
+<tr><td>CEO's existing salary</td><td>Out</td><td>Paid either way</td></tr></table>
+<p><b>The land is the swing item.</b> Omit it in the Brazos problem and NPV flips from -1.70 to +3.30, the wrong answer.</p>`],
+ ["Depreciation, NWC, salvage", `
+<pre>FCF = NOPAT + Dep - dNWC - CAPX + terminal value
+NOPAT = EBIT x (1 - tax)    EBIT = Sales - Costs - Dep
+After-tax salvage = P - t(P - B)</pre>
+<ul>
+<li><b>Interest never appears</b>, not even in the tax line. Always unlevered.</li>
+<li><b>Depreciation does two jobs.</b> Non-cash so not in the forecast, but it lowers tax, which is cash. Subtract, tax, add back.</li>
+<li><b>NWC:</b> model the change. Fully recovered at the end. No tax effect.</li>
+<li>Depreciated to zero means B = 0, so the whole sale price is taxable gain.</li>
+<li>Only the <b>depreciable base</b> (the building) is depreciated. Land is never depreciated.</li>
+</ul>
+<p><b>Micro-example:</b> Rev 100, costs 60, dep 20, tax 25%. EBIT = 20, NOPAT = 15, FCF = 15 + 20 = <b>35</b>.</p>`],
+ ["Terminal value, yield curve, NPV vs IRR", `
+<pre>TV_T = CF_T(1+g)/(r-g)     Exit multiple = 1/(r-g)</pre>
+<ul>
+<li>A 12x multiple is a claim that r - g is about 8.3%. A multiple is not an alternative to r and g.</li>
+<li>TV at the end of year T is <b>dated at T</b>. Still discount it back T periods.</li>
+<li><b>Why g must be small:</b> economic (saturation, competition), not mathematical.</li>
+<li><b>Yield curve:</b> each risk-free cash flow uses the spot rate for its own maturity. For CAPM on a 25-year project use a long-run rate (around 4 to 5%) and a market risk premium around 6 to 8%. Never a trailing window contaminated by one episode.</li>
+<li><b>NPV vs IRR:</b> NPV is additive and reflects scale. IRR is not additive, hides scale, can have multiple roots, and is meaningless without a hurdle rate.</li>
+<li><b>Zero NPV is a good project.</b> It earns exactly its required return. A large positive NPV is a reason to check your model: name the competitive advantage.</li>
+</ul>`],
+ ["Risk: numerator OR denominator", `
+<div class="fb note"><b class="h">The governing rule</b>Risk goes in the numerator <b>or</b> the denominator. Never both. Doing both is double discounting and <b>understates</b> value.</div>
+<p><b>Route A: risk-adjusted rate.</b></p>
+<pre>E[R] = r_f + beta(E[r_m] - r_f)
+beta_A = (E/V) beta_E + (D/V) beta_D
+or beta_A = beta_E / (1 + D/E) when beta_D = 0</pre>
+<p>Use a <b>pure-play comparable</b>, never your own firm's beta. Unlever the comp, relever at your structure. Unlevering <b>always lowers beta</b> (your sanity check).</p>
+<p><b>Route B: certainty equivalent.</b></p>
+<pre>CE[CF] = E[CF] - b(E[r_m] - r_f)
+PV = CE / (1 + r_f)</pre>
+<p>b is a <b>cash flow beta in dollars</b>, not a return beta.</p>
+<h3 style="margin-top:12px">Forward price = certainty equivalent</h3>
+<p>Expected spot $4.00, one-year forward $3.75. The 25 cents is a risk premium, not time value. Discount the forward at r_f: 3.75 / 1.05 = <b>3.571</b>. Other route: 4.00 at 12% = 3.571. Same value, two rates. Use 3.75 at 12% and you get 3.35, destroying 6%.</p>
+<p><b>Risk means beta, not volatility.</b> Diversifiable risk is free to bear. A coin-flip casino or a binary FDA decision is terrifying but discounted at r_f if beta is zero. Competitive advantage decides whether NPV is positive; beta decides the discount rate.</p>`],
+ ["Option pricing: replication & risk-neutral", `
+<p><b>Why DCF fails:</b> an option has no single beta. Its risk changes as the underlying moves. "Most you can lose is the premium" is not "low risk": an expired option returns -100%.</p>
+<p><b>No arbitrage:</b> identical payoffs in every state must have identical prices.</p>
+<pre>Replication:
+ Delta = (Cu - Cd) / (u S0 - d S0)
+ B     = (u Cd - d Cu) / ((u - d)(1 + r))
+ C0    = Delta S0 + B
+
+Risk-neutral:
+ q = (r* - d) / (u - d)
+ C = [q Cup + (1 - q) Cdown] / r*</pre>
+<p><b>q is a position on a number line, not a belief.</b> With d = 0.80, r* = 1.05, u = 1.25: q = 0.25/0.45 = 0.556.</p>
+<div class="fb note"><b class="h">Four-step procedure (never varies)</b>
+1) Build the stock tree forward (multiply by u and d).<br>
+2) Payoffs at the FINAL nodes only: max(0, S - K).<br>
+3) Compute q once. It is the same at every node.<br>
+4) Work backward, right to left: value = [q x up + (1 - q) x down] / r*.</div>
+<ul>
+<li>More steps does not change the value, just makes it more precise (1 step 4.78, 4 steps 3.80, 8 steps 3.86, B-S 3.92).</li>
+<li>Never exercise an American call early on a non-dividend payer. A dividend is the only thing that makes early exercise optimal. Real options almost always have a dividend analogue, so they need trees, not Black-Scholes.</li>
+</ul>`],
+ ["Part B: abandonment recipe", `
+<p>Given: PV of operating cash flows V0, up factor u, down factor d, exit (abandon) value X at end of year 1, risk-free factor, and the static NPV from Part A.</p>
+<ol>
+<li><b>Nodes.</b> V_up = V0 x u. V_down = V0 x d.</li>
+<li><b>Decision at each node.</b> Abandon only if X > node value. Option payoff = max(0, X - node value). Normally the up node pays 0 and the down node pays X - V_down.</li>
+<li><b>q</b> = (1 + r_f - d) / (u - d).</li>
+<li><b>Option value today</b> = [q(0) + (1 - q)(payoff down)] x (1 / (1 + r_f)). Use the printed factor.</li>
+<li><b>Total</b> = static NPV + option value. Build if positive.</li>
+<li><b>State the comparison out loud</b>: "Static NPV -2.9, plus option 3.57, equals +0.67, therefore build."</li>
+</ol>
+<p><b>Brazos:</b> V0 = 50, u = 1.30, d = 0.70, X = 44, r_f = 5%. V_up = 65 (continue, pays 0). V_down = 35 (abandon, pays 9). q = 0.35/0.60 = 0.5833. Option = 0.4167 x 9 x 0.9524 = <b>3.57</b>. Total = -2.9 + 3.57 = <b>+0.67, build</b>.</p>
+<p><b>Why not discount at 10%?</b> The risk-neutral method already handled risk in the numerator via q. Discounting at 10% charges for risk twice. And adding the option makes the bundle <i>safer</i>, not riskier.</p>
+<div class="fb note"><b class="h">The pattern, almost certainly on Monday</b>Static DCF comes out slightly negative. The abandonment option is worth more than the shortfall. The answer flips to accept. Always state the comparison explicitly.</div>`],
+ ["Real options: identify them", `
+<div class="fb note"><b class="h">Four questions</b>
+1) What decision can be made later that nobody is required to make? (No choice, no option.)<br>
+2) What do you get on exercise? That is S, a dollar value.<br>
+3) What do you pay or receive? For a call, K is what you pay. For a put, K is what you receive by walking away.<br>
+4) Would you do it when things go WELL (call) or BADLY (put)?</div>
+<table><tr><th>Type</th><th>S</th><th>K</th><th>C/P</th></tr>
+<tr><td>Timing / delay</td><td>Value of developed project</td><td>Investment cost</td><td>Call, American</td></tr>
+<tr><td>Abandon</td><td>Going-concern value</td><td>Salvage / exit value</td><td>Put</td></tr>
+<tr><td>Expand</td><td>Value of incremental capacity</td><td>Expansion cost</td><td>Call</td></tr>
+<tr><td>Contract</td><td>Value of marginal slice</td><td>Costs released</td><td>Put</td></tr>
+<tr><td>Growth / follow-on</td><td>PV of 2nd project</td><td>2nd project outlay</td><td>Call</td></tr>
+<tr><td>Switch</td><td>Value under better mode</td><td>Switching cost</td><td>Either, a strip</td></tr></table>
+<ul>
+<li><b>Growth options:</b> project one is the <i>premium</i>. Launch if NPV1 + call value > 0.</li>
+<li>Three things always true: flexibility weakly increases value, option value requires volatility, the naive decision tree understates the option.</li>
+<li>Two ways there is no value: no decision remains, or no volatility.</li>
+<li>Crane's pet peeve: people using "option value" as a crutch to justify bad projects.</li>
+<li>Airline case: 21% becomes 16.6% with abandonment. The bundle is safer than the project; the option alone is riskier than either.</li>
+</ul>
+<p><b>Arundel:</b> you must buy all 99 sequel rights, so divide the 26 winners' 500M by <b>99, not 26</b>: about 5M. The 26 is a forecast, not a set you can select.</p>`],
+ ["Capital structure", `
+<pre>No taxes:   V_L = V_U   r_E = r_A + (r_A - r_D)(D/E)   WACC flat at r_A
+With taxes: V_L = V_U + t_C D   r_L = r_A(1 - t_C D/V)
+APV:        V_L = V_U + PV(tax shield)
+Trade-off:  V_L = V_U + PV(ITS) - PV(E[distress])</pre>
+<ul>
+<li>Pumpkin pie: slicing differently does not make more pie. Any claim that financing creates value must name a violated assumption (no taxes, no transaction costs, no bankruptcy costs, no agency costs, perfect information).</li>
+<li>The t_C D shortcut needs perpetual constant debt, constant tax rate, and enough income to absorb the deduction.</li>
+<li><b>APV is required</b> when leverage policy changes over time (amortizing debt, changing tax rate). WACC needs a stable target D/V.</li>
+<li><b>Trade-off needs both ingredients.</b> Taxes alone give 100% debt; bankruptcy costs alone give zero.</li>
+<li>Crane's critique: trade-off "does not fit the data at all." Bankruptcy costs are far too small. About 30% of US public firms carry zero debt.</li>
+</ul>`],
+ ["Crane's pet peeves", `
+<ul>
+<li><b>"Conservative" means wrong.</b> Shading down leaves money on the table; shading up makes bad investments. He wants an unbiased expectation.</li>
+<li><b>Optionality as a crutch.</b> No decision means no option. No volatility means worth zero.</li>
+<li><b>"Because the formula breaks"</b> is never the reason g is small. It's economic.</li>
+<li><b>"You will always be able to look up how to value the option. What you will not be able to look up is: can you identify that you need to think about the option component?"</b></li>
+<li>Can't name the competitive advantage behind a big NPV? The number is probably wrong.</li>
+<li>State the comparison explicitly. Answer the question that was asked (yes or no).</li>
+</ul>`],
+ ["Last ten minutes before you walk in", `
+<ol>
+<li>Risk goes in the numerator or the denominator. Never both.</li>
+<li>FCF is always unlevered. Interest never appears, not even in tax.</li>
+<li>Owned assets enter at market value. Past spending never enters.</li>
+<li>Depreciation is added back after being used to compute tax.</li>
+<li>NWC: changes not levels, recovered at the end, no tax effect.</li>
+<li>A forward price is a certainty equivalent. Discount at r_f.</li>
+<li>Risk means beta. Zero beta means r_f however volatile.</li>
+<li>Payoffs at the final nodes only. q once. Work backward.</li>
+<li>Exercise when things go well = call; badly = put.</li>
+<li>Show the build. Label every row. No work means no credit.</li>
+</ol>`],
+];
+
+/* ============ SHEET ============ */
+const SHEET = `
+<h3>FCF</h3>
+<pre>FCF = NOPAT + Dep - dNWC - CAPX + TV
+NOPAT = EBIT(1 - t)   EBIT = Rev - Costs - Dep
+After-tax salvage = P - t(P - B)
+Dep = (depreciable base) / years  (land never)
+t=0: -(CAPX + owned asset at MARKET + NWC)
+OUT: sunk, interest, principal, allocated OH
+IN: opp cost, cannibalization, new hires
+PV = FCF x discount factor; NPV = t0 + sum PV</pre>
+<h3>Terminal value / NPV</h3>
+<pre>TV_T = CF_T(1+g)/(r-g)  (dated T, discount T)
+Multiple = 1/(r-g)   g small: economic reason
+NPV additive; IRR not. Zero NPV is fine.</pre>
+<h3>Risk</h3>
+<pre>Numerator OR denominator, never both
+E[R] = rf + beta(Erm - rf)
+beta_A = (E/V)beta_E + (D/V)beta_D
+beta_A = beta_E/(1+D/E)  (beta_D=0)
+Unlever always lowers beta. Use pure-play comp.
+CE = E[CF] - b(Erm - rf); PV = CE/(1+rf)
+Forward price = CE: discount at rf
+Risk = beta, not volatility</pre>
+<h3>Binomial</h3>
+<pre>Vup = V0 u    Vdown = V0 d
+q = (1 + rf - d)/(u - d)   (not a belief)
+Option = [q Cup + (1-q) Cdown] / (1+rf)
+Abandon: payoff = max(0, X - V) at each node
+Total = static NPV + option; build if > 0
+Steps: tree fwd, final payoffs, q once, back
+Replication: Delta=(Cu-Cd)/(uS-dS)
+ B=(uCd-dCu)/((u-d)(1+r))  C=Delta S+B
+Don't early-exercise American call, no div.</pre>
+<h3>Real options</h3>
+<pre>Q1 decision later? Q2 S ($ value) Q3 K
+Q4 well = CALL, badly = PUT
+delay=call  abandon=put  expand=call
+contract=put  growth=call (proj 1 = premium)
+switch=strip  no decision=no option
+no volatility = option worth 0
+Launch proj1 if NPV1 + call > 0
+Arundel: divide by all 99, not 26</pre>
+<h3>Capital structure</h3>
+<pre>No tax: VL=VU  rE=rA+(rA-rD)D/E  WACC flat
+Tax: VL=VU+tD  rL=rA(1-tD/V)
+APV when leverage/tax rate changes
+Tradeoff: VL=VU+PV(ITS)-PV(distress)
+Needs BOTH. 30% of US firms: zero debt.
+Financing value claim: name violated assumption
+Conservative = wrong. Unbiased expectation.</pre>`;
+
+/* ============ LAB: scenario generators ============ */
+const NAMES = ["Sugar Land Cold Storage","Galveston Port Terminal","Katy Distribution Hub","Beaumont Processing Unit","Waco Solar Array","Austin Server Farm","Midland Pipeline Depot","Bayou Grain Elevator"];
+const r4 = x => Math.round(x*10000)/10000;
+function genA(){
+  for(let tries=0;tries<50;tries++){
+    const N = pick([3,4]), dep = pick([6,8,10,12]), C = dep*N;
+    const tax = pick([0.20,0.25,0.30,0.35]), r = pick([0.08,0.10,0.12]);
+    const rev=[], op=[], df=[];
+    for(let i=1;i<=N;i++){ const o=rint(6,15); op.push(o); rev.push(o+dep+rint(2,9)); df.push(r4(1/Math.pow(1+r,i))); }
+    const land = Math.random()<0.55 ? (()=>{const m=rint(3,8); return {mkt:m,hist:Math.max(1,m-rint(1,3))};})() : null;
+    const debt = Math.random()<0.6 ? {amt:rint(10,25), rate:pick([0.05,0.06,0.07])} : null;
+    return {name:pick(NAMES), N, C, depBase:C, tax, r, rev, op, df, nwc:rint(1,4), salv:rint(2,8), land, sunk:{amt:rint(1,3), what:pick(["a feasibility study","market research","an engineering study"])}, debt};
+  }
+}
+const PACK_A = {
+  brazos:{name:"Brazos Valley Cold Storage",N:4,C:46,depBase:46,tax:0.25,r:0.10,rev:[26,30,32,28],op:[12,14,15,13],df:[0.9091,0.8264,0.7513,0.6830],nwc:2,salv:8,land:{mkt:5,hist:3,yr:"2019"},sunk:{amt:1.5,what:"a feasibility study"},debt:{amt:20,rate:0.06}},
+  gulf:{name:"Gulf Coast Data Center",N:3,C:30,depBase:30,tax:0.30,r:0.12,rev:[22,25,20],op:[10,11,9],df:[0.8929,0.7972,0.7118],nwc:3,salv:4,land:null,sunk:{amt:2,what:"R&D two years ago developing the cooling system"},debt:null}
+};
+function solveA(s){
+  const dep = s.depBase/s.N, rows=[]; let pvSum=0;
+  const salvAT = s.salv - s.tax*(s.salv-0);
+  for(let i=0;i<s.N;i++){
+    const ebit = s.rev[i]-s.op[i]-dep, nopat = ebit*(1-s.tax);
+    const last = i===s.N-1;
+    const fcf = nopat + dep + (last ? salvAT + s.nwc : 0);
+    const pv = fcf*s.df[i]; pvSum+=pv;
+    rows.push({rev:s.rev[i],op:s.op[i],dep,ebit,nopat,salv:last?salvAT:0,nwcRec:last?s.nwc:0,fcf,df:s.df[i],pv});
+  }
+  const t0 = -(s.C + (s.land?s.land.mkt:0) + s.nwc);
+  return {dep,rows,salvAT,t0,pvSum,npv:t0+pvSum};
+}
+function genB(staticNPV){
+  const V0 = rint(24,60), u = pick([1.2,1.3,1.4,1.5]), d = pick([0.6,0.65,0.7,0.75,0.8]);
+  const rf = pick([0.04,0.05,0.06]);
+  const Vu=V0*u, Vd=V0*d;
+  const X = Math.round(Vd + (Vu-Vd)*pick([0.35,0.45,0.55]));
+  return {V0,u,d,rf,fac:r4(1/(1+rf)),X,stat: staticNPV!=null?staticNPV:-(rint(5,50)/10), name:pick(NAMES)};
+}
+const PACK_B = {
+  brazos:{name:"Brazos Valley Cold Storage",V0:50,u:1.30,d:0.70,rf:0.05,fac:0.9524,X:44,stat:-2.9},
+  gulf:{name:"Gulf Coast Data Center",V0:32,u:1.40,d:0.65,rf:0.06,fac:0.9434,X:26,stat:-0.87}
+};
+function solveB(s){
+  const Vu=s.V0*s.u, Vd=s.V0*s.d;
+  const pu=Math.max(0,s.X-Vu), pd=Math.max(0,s.X-Vd);
+  const q=(1+s.rf-s.d)/(s.u-s.d);
+  const opt=(q*pu+(1-q)*pd)*s.fac;
+  return {Vu,Vd,pu,pd,q,opt,total:s.stat+opt};
+}
+
+/* ============ app state ============ */
+const TABS = [["learn","Learn","📖"],["tf","T / F","✅"],["opt","Options","🧩"],["cards","Cards","🃏"],["lab","Q2 Lab","🧮"],["sheet","Sheet","📋"]];
+const S = { tab: 'tf',
+  tf: { mode:null, queue:[], i:0, ans:null, right:0, wrong:[], total:0 },
+  opt: { queue:null, i:0, ans:null, right:0, wrong:0, done:false },
+  cards: { queue:null, i:0, flip:false, got:0 },
+  lab: { part:'A', src:'random', A:null, B:null, checked:false, shown:false }
+};
+function nav(t){ S.tab=t; render(); window.scrollTo(0,0); try{ const s=store.get(); s.tab=t; store.set(s);}catch(e){} }
+function renderNav(){
+  $('#nav').innerHTML = TABS.map(t=>`<button class="${S.tab===t[0]?'on':''}" data-nav="${t[0]}"><span class="ic">${t[2]}</span>${t[1]}</button>`).join('');
+}
+
+/* ============ T/F ============ */
+function tfStats(){
+  const s=store.get(); const seen=s.seen||{}; let r=0,w=0; Object.values(seen).forEach(v=>{r+=v.r;w+=v.w;});
+  const missed=Object.keys(s.missed||{}).filter(id=>TF.some(q=>q.id===id));
+  return {r,w,missed,mastered:Object.values(seen).filter(v=>v.r>=2&&v.r>v.w).length};
+}
+function tfStart(mode){
+  let pool;
+  if(mode==='all') pool=TF; else if(mode==='pack') pool=TF.filter(q=>q.src==='pack'); else if(mode==='extra') pool=TF.filter(q=>q.src==='extra');
+  else if(mode==='missed'){ const m=tfStats().missed; pool=TF.filter(q=>m.includes(q.id)); }
+  else if(mode==='mock') pool=TF;
+  else if(mode.startsWith('tag:')) pool=TF.filter(q=>q.tag===mode.slice(4));
+  let queue=shuffle(pool); if(mode==='mock') queue=queue.slice(0,6);
+  if(!queue.length) return;
+  Object.assign(S.tf,{mode,queue,i:0,ans:null,right:0,wrong:[],total:queue.length}); render();
+}
+function tfAnswer(v){
+  const t=S.tf; if(t.ans!==null) return;
+  const q=t.queue[t.i]; t.ans=v; const ok=(v===q.a);
+  const s=store.get(); s.seen=s.seen||{}; s.missed=s.missed||{};
+  const e=s.seen[q.id]||{r:0,w:0};
+  if(ok){ t.right++; e.r++; delete s.missed[q.id]; } else { t.wrong.push(q); e.w++; s.missed[q.id]=1; }
+  s.seen[q.id]=e; store.set(s); render();
+}
+function tfNext(){ S.tf.i++; S.tf.ans=null; render(); }
+function renderTF(){
+  const t=S.tf, st=tfStats();
+  if(!t.mode){
+    const tags=[...new Set(TF.map(q=>q.tag))];
+    return `<h2>True / False</h2>
+    <div class="stats"><div class="stat"><b>${TF.length}</b><span>questions</span></div><div class="stat"><b>${st.r+st.w?Math.round(100*st.r/(st.r+st.w)):0}%</b><span>lifetime</span></div><div class="stat"><b>${st.missed.length}</b><span>to review</span></div></div>
+    <button class="btn primary block" data-tfmode="mock">Mock Q1: 6 random statements<small>Same as the exam: 3 pts each, 18 total</small></button>
+    <button class="btn block" data-tfmode="all">Shuffle all ${TF.length}<small>${TF_PACK.length} from your pack + ${TF_EXTRA.length} extras I wrote</small></button>
+    <button class="btn block" data-tfmode="missed" ${st.missed.length?'':'style="opacity:.5"'}>Review missed (${st.missed.length})<small>Questions you got wrong and have not fixed yet</small></button>
+    <div class="row"><button class="btn" data-tfmode="pack">Pack 30 only</button><button class="btn" data-tfmode="extra">Extras only</button></div>
+    <h3>By topic</h3><div class="row">${tags.map(g=>`<button class="btn" data-tfmode="tag:${g}">${g} (${TF.filter(q=>q.tag===g).length})</button>`).join('')}</div>
+    <p class="muted" style="margin-top:18px;font-size:13px">Tip: on a False, say the one-clause reason out loud before tapping. That is what earns the points.</p>
+    <p class="kbd noprint"><a href="#" data-reset="1" style="color:var(--muted)">Reset progress</a></p>`;
+  }
+  if(t.i>=t.queue.length){
+    const pct=Math.round(100*t.right/t.total);
+    return `<h2>${t.mode==='mock'?'Mock Q1 result':'Round complete'}</h2>
+    <div class="card"><div style="font-size:42px;font-weight:800">${t.mode==='mock'?(t.right*3)+' / 18':t.right+' / '+t.total}</div><div class="muted">${pct}% correct</div></div>
+    ${t.wrong.length?`<h3>Review these</h3>`+t.wrong.map(q=>`<div class="card"><span class="tag">${q.tag}</span><div style="font-weight:600;margin:6px 0">${esc(q.q)}</div><div class="fb ${q.a?'ok':'bad'}"><b class="h">${q.a?'TRUE':'FALSE'}</b>${esc(q.why)}</div></div>`).join(''):'<div class="fb ok"><b class="h">Clean sweep</b>Nothing missed.</div>'}
+    <div class="row">${t.wrong.length?`<button class="btn primary" data-tfmode="missed">Retry missed</button>`:''}<button class="btn" data-tfmode="${t.mode}">Again</button><button class="btn" data-tfhome="1">Menu</button></div>`;
+  }
+  const q=t.queue[t.i], done=t.ans!==null, ok=done&&t.ans===q.a;
+  return `<div class="row" style="justify-content:space-between;align-items:center"><span class="kbd">${t.mode==='mock'?'Mock Q1':'Practice'} · ${t.i+1} of ${t.total}</span><a href="#" data-tfhome="1" class="kbd">Quit</a></div>
+  <div class="bar"><i style="width:${100*t.i/t.total}%"></i></div>
+  <div class="card"><span class="tag">${q.tag}</span><div class="q">${esc(q.q)}</div>
+  ${done?`<div class="fb ${ok?'ok':'bad'}"><b class="h">${ok?'Correct':'Not quite'}: the statement is ${q.a?'TRUE':'FALSE'}</b>${esc(q.why)}</div>
+  <button class="btn primary block" data-tfnext="1">${t.i+1>=t.total?'See results':'Next'}</button>`
+  :`<div class="row"><button class="btn big t" data-tf="1">TRUE</button><button class="btn big f" data-tf="0">FALSE</button></div><p class="kbd" style="text-align:center;margin:10px 0 0">Keyboard: T / F</p>`}
+  </div>`;
+}
+
+/* ============ Options ============ */
+function renderOpt(){
+  const o=S.opt;
+  if(!o.queue){ o.queue=shuffle(OPTS.map((x,i)=>i)); o.i=0; o.ans=null; o.right=0; o.wrong=0; o.done=false; }
+  if(o.i>=o.queue.length) return `<h2>Real options</h2><div class="card"><div style="font-size:38px;font-weight:800">${o.right} / ${o.queue.length}</div><div class="muted">identified correctly</div></div><button class="btn primary block" data-optreset="1">Go again</button>`;
+  const item=OPTS[o.queue[o.i]], done=o.ans!==null;
+  const keys=Object.keys(OPT_TYPES);
+  return `<h2>Identify the option</h2>
+  <div class="bar"><i style="width:${100*o.i/o.queue.length}%"></i></div>
+  <div class="card"><div class="q">${esc(item[0])}</div>
+  <p class="muted" style="margin:0 0 10px;font-size:13px">What kind of option is this? (One of these may be a trap: no option, or an option worth about zero.)</p>
+  <div class="grid">${keys.map(k=>{
+     let cls=''; if(done){ if(k===item[1]) cls='right'; else if(k===o.ans) cls='wrong'; }
+     return `<button class="btn opt ${cls}" data-optans="${k}" ${done?'disabled':''}>${OPT_TYPES[k][0]}<small>${OPT_TYPES[k][1]}</small></button>`;}).join('')}</div>
+  ${done?`<div class="fb ${o.ans===item[1]?'ok':'bad'}"><b class="h">${o.ans===item[1]?'Correct':'Answer: '+OPT_TYPES[item[1]][0]}</b>${esc(item[2])}</div><button class="btn primary block" data-optnext="1">Next</button>`:''}
+  </div>`;
+}
+
+/* ============ Cards ============ */
+function renderCards(){
+  const c=S.cards;
+  if(!c.queue){ c.queue=shuffle(CARDS.map((x,i)=>i)); c.i=0; c.flip=false; c.got=0; }
+  if(c.i>=c.queue.length) return `<h2>Concept cards</h2><div class="card"><div style="font-size:30px;font-weight:800">Deck done</div><div class="muted">You cleared all ${CARDS.length} cards.</div></div><button class="btn primary block" data-cardsreset="1">Reshuffle</button>`;
+  const card=CARDS[c.queue[c.i]];
+  return `<h2>Concept cards</h2>
+  <div class="kbd">${c.queue.length-c.i} left · say your answer out loud, then flip</div>
+  <div class="bar"><i style="width:${100*c.got/CARDS.length}%"></i></div>
+  <div class="card flash" data-flip="1">${c.flip?`<div class="muted" style="font-size:12px;margin-bottom:6px">ANSWER</div><div>${esc(card[1])}</div>`:`<div class="muted" style="font-size:12px;margin-bottom:6px">QUESTION (tap to flip)</div><div class="q" style="margin:0">${esc(card[0])}</div>`}</div>
+  ${c.flip?`<div class="row"><button class="btn big f" data-cardagain="1">Again</button><button class="btn big t" data-cardgot="1">Got it</button></div>`:`<button class="btn block" data-flip="1">Show answer</button>`}`;
+}
+
+/* ============ Lab ============ */
+function labNew(){
+  const L=S.lab; L.checked=false; L.shown=false;
+  if(L.src==='random'){ L.A=genA(); L.B=genB(); }
+  else { L.A=PACK_A[L.src]; L.B=PACK_B[L.src]; }
+  render();
+}
+function money(x){ return (x<0?'-':'')+'$'+Math.abs(x).toFixed(Math.abs(x)%1===0?0:(Math.abs(x*10)%1===0?1:2))+'M'; }
+function renderLab(){
+  const L=S.lab; if(!L.A) { L.A=genA(); L.B=genB(); }
+  const seg=`<div class="seg">${[['random','Random'],['brazos','Brazos'],['gulf','Gulf Coast']].map(x=>`<button class="${L.src===x[0]?'on':''}" data-labsrc="${x[0]}">${x[1]}</button>`).join('')}</div>
+  <div class="seg">${[['A','Part A: DCF'],['B','Part B: Abandon']].map(x=>`<button class="${L.part===x[0]?'on':''}" data-labpart="${x[0]}">${x[1]}</button>`).join('')}</div>`;
+  return `<h2>Question 2 Lab</h2>${seg}`+(L.part==='A'?labA():labB());
+}
+function labA(){
+  const s=S.lab.A, sol=solveA(s), L=S.lab;
+  const yrs=[...Array(s.N)].map((_,i)=>'Yr '+(i+1));
+  const tbl=`<div class="scroll"><table><tr><th>$M</th>${yrs.map(y=>`<th class="n">${y}</th>`).join('')}</tr>
+  <tr><td>Revenue</td>${s.rev.map(v=>`<td class="n">${v.toFixed(1)}</td>`).join('')}</tr>
+  <tr><td>Operating costs</td>${s.op.map(v=>`<td class="n">${v.toFixed(1)}</td>`).join('')}</tr>
+  <tr><td>Discount factor at ${Math.round(s.r*100)}%</td>${s.df.map(v=>`<td class="n">${f4(v)}</td>`).join('')}</tr></table></div>`;
+  const dp = s.depBase!==s.C?'':'';
+  const text=`<p>${esc(s.name)} costs <b>$${s.C}M</b> at t = 0 and operates ${s.N} years. ${s.land?`It sits on land already owned, bought ${s.land.yr?'in '+s.land.yr+' ':'earlier '}for <b>$${s.land.hist}M</b>, sellable today for <b>$${s.land.mkt}M</b>. `:''}The firm spent <b>$${s.sunk.amt}M</b> last year on ${esc(s.sunk.what)}. NWC of <b>$${s.nwc}M</b> is funded at t = 0 and recovered at the end of year ${s.N}. Straight-line depreciation to zero over ${s.N} years on the facility${s.land?' (not the land)':''}. The facility sells for <b>$${s.salv}M</b> at the end of year ${s.N}. ${s.debt?`The project carries $${s.debt.amt}M of debt at ${Math.round(s.debt.rate*100)}%, giving <b>$${(s.debt.amt*s.debt.rate).toFixed(1)}M</b> of annual interest. `:''}Tax rate <b>${Math.round(s.tax*100)} percent</b>, cost of capital <b>${Math.round(s.r*100)} percent</b>.</p>`;
+  const fields=[
+    {k:'t0',l:'t = 0 cash flow',h:'investment + opp cost + NWC',a:sol.t0},
+    {k:'f1',l:'FCF year 1',a:sol.rows[0].fcf},
+    {k:'fN',l:'FCF year '+s.N,h:'includes salvage + NWC',a:sol.rows[s.N-1].fcf},
+    {k:'npv',l:'NPV ($M)',a:sol.npv}
+  ];
+  let h=`<div class="card">${text}${tbl}
+  <p class="muted" style="font-size:13px;margin:4px 0">Enter values in $M (negatives allowed, e.g. -53). Within about 0.1 counts as right.</p>
+  ${fields.map(f=>`<div class="field"><label>${f.l}${f.h?`<span class="hint">${f.h}</span>`:''}</label><input id="la_${f.k}" inputmode="text" autocomplete="off" autocapitalize="off" placeholder="0.00"></div>`).join('')}
+  <div class="field"><label>Should they build it?</label><select id="la_dec"><option value="">Pick</option><option value="y">Yes, build</option><option value="n">No, do not build</option></select></div>
+  <div class="row"><button class="btn primary" data-labcheck="A">Check</button><button class="btn" data-labshow="A">Show full solution</button><button class="btn" data-labnew="1">${S.lab.src==='random'?'New problem':'Reset'}</button></div></div>`;
+  if(L.shown){
+    h+=`<div class="card"><h3 style="margin-top:0">Labeled build (copy this layout on the exam)</h3><div class="scroll"><table><tr><th>$M</th>${yrs.map(y=>`<th class="n">${y}</th>`).join('')}</tr>
+    <tr><td>Revenue</td>${sol.rows.map(r=>`<td class="n">${f3(r.rev)}</td>`).join('')}</tr>
+    <tr><td>- Operating costs</td>${sol.rows.map(r=>`<td class="n">${f3(r.op)}</td>`).join('')}</tr>
+    <tr><td>- Depreciation</td>${sol.rows.map(r=>`<td class="n">${f3(r.dep)}</td>`).join('')}</tr>
+    <tr><td>= EBIT</td>${sol.rows.map(r=>`<td class="n">${f3(r.ebit)}</td>`).join('')}</tr>
+    <tr><td>x (1 - ${s.tax})= NOPAT</td>${sol.rows.map(r=>`<td class="n">${f3(r.nopat)}</td>`).join('')}</tr>
+    <tr><td>+ Depreciation</td>${sol.rows.map(r=>`<td class="n">${f3(r.dep)}</td>`).join('')}</tr>
+    <tr><td>+ After-tax salvage</td>${sol.rows.map(r=>`<td class="n">${r.salv?f3(r.salv):'-'}</td>`).join('')}</tr>
+    <tr><td>+ NWC recovery</td>${sol.rows.map(r=>`<td class="n">${r.nwcRec?f3(r.nwcRec):'-'}</td>`).join('')}</tr>
+    <tr class="tot"><td>= FCF</td>${sol.rows.map(r=>`<td class="n">${f3(r.fcf)}</td>`).join('')}</tr>
+    <tr><td>x Discount factor</td>${sol.rows.map(r=>`<td class="n">${f4(r.df)}</td>`).join('')}</tr>
+    <tr class="tot"><td>= PV</td>${sol.rows.map(r=>`<td class="n">${f3(r.pv)}</td>`).join('')}</tr></table></div>
+    <pre>Depreciation = ${s.depBase} / ${s.N} = ${sol.dep}
+After-tax salvage = ${s.salv} - ${s.tax}(${s.salv} - 0) = ${f3(sol.salvAT)}
+t = 0 = -${s.C} (facility)${s.land?` - ${s.land.mkt} (land at market)`:''} - ${s.nwc} (NWC) = ${f2(sol.t0)}
+PV of years 1 to ${s.N} = ${f3(sol.pvSum)}
+NPV = ${f3(sol.pvSum)} + (${f2(sol.t0)}) = ${f2(sol.npv)}</pre>
+    <div class="fb note"><b class="h">Included / excluded</b>
+    <b>Excluded:</b> the $${s.sunk.amt}M ${esc(s.sunk.what)} (sunk)${s.debt?`, interest and debt (financing, in the discount rate; taxes computed unlevered)`:''}${s.land?`, and the $${s.land.hist}M historical price of the land (sunk).<br><b>Included:</b> the land at its $${s.land.mkt}M market value (opportunity cost). Omit it and NPV would be ${f2(sol.npv+s.land.mkt)}.`:'.'}
+    </div>
+    <div class="fb ${sol.npv>=0?'ok':'bad'}"><b class="h">Answer in words</b>NPV is ${sol.npv>=0?'positive':'negative'} ${money(Math.abs(sol.npv))}. ${sol.npv>=0?'Build it.':'On this analysis alone, do not build.'}</div></div>`;
+  }
+  return h;
+}
+function labB(){
+  const s=S.lab.B, sol=solveB(s), L=S.lab;
+  const text=`<p>Use these figures, not your Part A answer. The PV of operating cash flows is <b>$${s.V0}M</b>. Over one year it rises by <b>u = ${s.u.toFixed(2)}</b> or falls by <b>d = ${s.d.toFixed(2)}</b>. At the end of year 1 only, the firm may abandon and sell the facility for a guaranteed <b>$${s.X}M</b>. Risk-free rate <b>${Math.round(s.rf*100)} percent</b>, one-year factor <b>${f4(s.fac)}</b>. Static NPV without the abandonment right is <b>${money(s.stat)}</b>.</p>`;
+  const fields=[
+    {k:'pu',l:'Option payoff, up node',a:sol.pu},
+    {k:'pd',l:'Option payoff, down node',a:sol.pd},
+    {k:'q',l:'Risk-neutral q',h:'4 decimals fine, e.g. 0.5833',a:sol.q,tol:0.003},
+    {k:'opt',l:'Option value today ($M)',a:sol.opt,tol:0.08},
+    {k:'tot',l:'Static NPV + option ($M)',a:sol.total,tol:0.1}
+  ];
+  let h=`<div class="card">${text}
+  ${fields.map(f=>`<div class="field"><label>${f.l}${f.h?`<span class="hint">${f.h}</span>`:''}</label><input id="lb_${f.k}" inputmode="text" autocomplete="off" autocapitalize="off" placeholder="0.00"></div>`).join('')}
+  <div class="field"><label>Should they build it?</label><select id="lb_dec"><option value="">Pick</option><option value="y">Yes, build</option><option value="n">No, do not build</option></select></div>
+  <div class="row"><button class="btn primary" data-labcheck="B">Check</button><button class="btn" data-labshow="B">Show full solution</button><button class="btn" data-labnew="1">${S.lab.src==='random'?'New problem':'Reset'}</button></div></div>`;
+  if(L.shown){
+    h+=`<div class="card"><h3 style="margin-top:0">Tree and answer</h3>
+    <pre>               Year 0        Year 1 (abandon decision)
+                          V_up = ${s.V0} x ${s.u} = ${f2(sol.Vu)}   exit ${s.X}: ${sol.Vu>=s.X?'continue':'abandon'}, pays ${f2(sol.pu)}
+          V0 = ${s.V0}
+                          V_down = ${s.V0} x ${s.d} = ${f2(sol.Vd)}   exit ${s.X}: ${sol.Vd>=s.X?'continue':'abandon'}, pays ${f2(sol.pd)}
+
+q = (1 + ${s.rf} - ${s.d}) / (${s.u} - ${s.d}) = ${f4(sol.q)}     1 - q = ${f4(1-sol.q)}
+Option = [${f4(sol.q)}(${f2(sol.pu)}) + ${f4(1-sol.q)}(${f2(sol.pd)})] x ${f4(s.fac)} = ${f2(sol.opt)}
+Total = ${money(s.stat)} + ${f2(sol.opt)} = ${f2(sol.total)}</pre>
+    <div class="fb ${sol.total>=0?'ok':'bad'}"><b class="h">${sol.total>=0?'Build it.':'Do not build.'}</b>Static NPV ${s.stat}, plus option value ${f2(sol.opt)}, equals ${f2(sol.total)}, therefore ${sol.total>=0?'accept':'reject'}.</div>
+    <p class="muted" style="font-size:13px">Do not discount the option payoff at the project's cost of capital. The risk-neutral method already handled risk through q, so use the risk-free factor only.</p></div>`;
+  }
+  return h;
+}
+function num(id){ const el=document.getElementById(id); if(!el) return NaN; const v=el.value.replace(/[$,M\s]/gi,'').replace(/[−–]/g,'-'); return v===''?NaN:parseFloat(v); }
+function labCheck(part){
+  const L=S.lab; let fields, sol, dec, tol=0.1;
+  if(part==='A'){ sol=solveA(L.A); fields=[['la_t0',sol.t0],['la_f1',sol.rows[0].fcf],['la_fN',sol.rows[L.A.N-1].fcf],['la_npv',sol.npv]]; dec=sol.npv>=0?'y':'n'; }
+  else { sol=solveB(L.B); fields=[['lb_pu',sol.pu,tol],['lb_pd',sol.pd,tol],['lb_q',sol.q,0.003],['lb_opt',sol.opt,0.08],['lb_tot',sol.total,0.1]]; dec=sol.total>=0?'y':'n'; }
+  let right=0;
+  fields.forEach(f=>{ const el=document.getElementById(f[0]); const v=num(f[0]); const t=f[2]||tol; const ok=!isNaN(v)&&Math.abs(v-f[1])<=t; el.className=ok?'ok':'bad'; if(ok) right++; });
+  const d=document.getElementById(part==='A'?'la_dec':'lb_dec'); const dok=d.value===dec; d.className=d.value?(dok?'ok':'bad'):''; if(dok) right++;
+  const n=fields.length+1;
+  let box=document.getElementById('labmsg'); if(!box){ box=document.createElement('div'); box.id='labmsg'; box.className='fb'; document.querySelector('.card .row').after(box); }
+  box.className='fb '+(right===n?'ok':'note');
+  box.innerHTML=`<b class="h">${right} of ${n} correct</b>${right===n?'Nice. Now say the comparison out loud in one sentence.':'Red fields are off. Tap Show full solution to see the labeled build.'}`;
+}
+
+/* ============ main render ============ */
+function render(){
+  renderNav();
+  const a=$('#app'); let h='';
+  if(S.tab==='learn') h=`<h2>Learn</h2><p class="muted" style="margin-top:-6px">The whole course, boiled down. Open a section, read it, then go quiz.</p>`+LEARN.map((x,i)=>`<details ${i===0?'open':''}><summary>${x[0]}</summary><div class="body">${x[1]}</div></details>`).join('');
+  else if(S.tab==='tf') h=renderTF();
+  else if(S.tab==='opt') h=renderOpt();
+  else if(S.tab==='cards') h=renderCards();
+  else if(S.tab==='lab') h=renderLab();
+  else if(S.tab==='sheet') h=`<h2>Formula sheet</h2><p class="muted noprint" style="margin-top:-6px">Everything on one scroll. You get a double-sided sheet: write the important ones by hand (writing it is half the studying).</p><div class="sheet card">${SHEET}</div><button class="btn noprint" onclick="window.print()">Print this</button>`;
+  a.innerHTML=h;
+}
+
+/* ============ events ============ */
+document.addEventListener('click',e=>{
+  const g=(a)=>e.target.closest('['+a+']');
+  let el;
+  if(el=g('data-nav')){ nav(el.dataset.nav); return; }
+  if(el=g('data-tfmode')){ tfStart(el.dataset.tfmode); return; }
+  if(el=g('data-tfhome')){ e.preventDefault(); S.tf.mode=null; render(); return; }
+  if(el=g('data-tf')){ tfAnswer(el.dataset.tf==='1'); return; }
+  if(el=g('data-tfnext')){ tfNext(); return; }
+  if(el=g('data-reset')){ e.preventDefault(); if(confirm('Reset all T/F progress?')){ store.set({}); S.tf.mode=null; render(); } return; }
+  if(el=g('data-optans')){ const o=S.opt; if(o.ans!==null) return; o.ans=el.dataset.optans; const it=OPTS[o.queue[o.i]]; if(o.ans===it[1]) o.right++; else o.wrong++; render(); return; }
+  if(el=g('data-optnext')){ S.opt.i++; S.opt.ans=null; render(); return; }
+  if(el=g('data-optreset')){ S.opt.queue=null; render(); return; }
+  if(el=g('data-flip')){ S.cards.flip=!S.cards.flip; render(); return; }
+  if(el=g('data-cardgot')){ const c=S.cards; c.got++; c.i++; c.flip=false; render(); return; }
+  if(el=g('data-cardagain')){ const c=S.cards; c.queue.push(c.queue[c.i]); c.i++; c.flip=false; render(); return; }
+  if(el=g('data-cardsreset')){ S.cards.queue=null; render(); return; }
+  if(el=g('data-labsrc')){ S.lab.src=el.dataset.labsrc; labNew(); return; }
+  if(el=g('data-labpart')){ S.lab.part=el.dataset.labpart; S.lab.shown=false; render(); return; }
+  if(el=g('data-labnew')){ labNew(); return; }
+  if(el=g('data-labshow')){ S.lab.shown=true; const keep={}; document.querySelectorAll('.field input,.field select').forEach(i=>keep[i.id]=[i.value,i.className]); render(); Object.keys(keep).forEach(k=>{const i=document.getElementById(k); if(i){i.value=keep[k][0]; i.className=keep[k][1];}}); return; }
+  if(el=g('data-labcheck')){ labCheck(el.dataset.labcheck); return; }
+});
+document.addEventListener('keydown',e=>{
+  if(S.tab!=='tf'||!S.tf.mode||e.target.matches('input,select,textarea')) return;
+  const k=e.key.toLowerCase();
+  if(S.tf.i<S.tf.queue.length){
+    if(S.tf.ans===null){ if(k==='t') tfAnswer(true); else if(k==='f') tfAnswer(false); }
+    else if(k===' '||k==='enter'||k==='n'){ e.preventDefault(); tfNext(); }
+  }
+});
+$('#theme').addEventListener('click',()=>{
+  const r=document.documentElement; const dark=getComputedStyle(r).getPropertyValue('--bg').trim()==='#0a1424';
+  r.dataset.theme=dark?'light':'dark'; try{ const s=store.get(); s.theme=r.dataset.theme; store.set(s);}catch(e){}
+});
+(function init(){
+  const s=store.get(); if(s.theme) document.documentElement.dataset.theme=s.theme;
+  if(s.tab && TABS.some(t=>t[0]===s.tab)) S.tab=s.tab;
+  render();
+})();
+</script>
+</body>
+</html>
