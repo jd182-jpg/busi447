@@ -641,8 +641,9 @@ function money(x){ return (x<0?'-':'')+'$'+Math.abs(x).toFixed(Math.abs(x)%1===0
 function renderLab(){
   const L=S.lab; if(!L.A) { L.A=genA(); L.B=genB(); }
   const seg=`<div class="seg">${[['random','Random'],['brazos','Brazos'],['gulf','Gulf Coast'],['brewery','Brewery'],['lng','LNG'],['wind','Wind']].map(x=>`<button class="${L.src===x[0]?'on':''}" data-labsrc="${x[0]}">${x[1]}</button>`).join('')}</div>
-  <div class="seg">${[['A','Part A: DCF'],['B','Part B: Abandon']].map(x=>`<button class="${L.part===x[0]?'on':''}" data-labpart="${x[0]}">${x[1]}</button>`).join('')}</div>`;
-  return `<h2>Question 2 Lab</h2>${seg}`+(L.part==='A'?labA():labB());
+  <div class="seg">${[['A','Part A'],['B','Part B'],['D','B Drill']].map(x=>`<button class="${L.part===x[0]?'on':''}" data-labpart="${x[0]}">${x[1]}</button>`).join('')}</div>`;
+  if(L.part==='D' && !L.drill) drillNew(true);
+  return `<h2>Question 2 Lab</h2>${seg}`+(L.part==='A'?labA():L.part==='B'?labB():labDrill());
 }
 function labA(){
   const s=S.lab.A, sol=solveA(s), L=S.lab;
@@ -720,6 +721,38 @@ Total = ${money(s.stat)} + ${f2(sol.opt)} = ${f2(sol.total)}</pre>
   }
   return h;
 }
+/* ---- Part B quick drill ---- */
+function drillNew(first){
+  const L=S.lab, old=L.drill||{n:0,full:0,streak:0,best:0};
+  L.drill={B:genB(),n:old.n,full:old.full,streak:old.streak,best:old.best,checked:false,res:null};
+  if(!first) render();
+}
+function labDrill(){
+  const L=S.lab, D=L.drill, s=D.B, sol=solveB(s);
+  const fields=[['q','Risk-neutral q','e.g. 0.5833'],['pd','Option payoff, down node',''],['opt','Option value today ($M)',''],['tot','Static NPV + option ($M)','']];
+  const stat=`<div class="stats"><div class="stat"><b>${D.full}/${D.n}</b><span>perfect</span></div><div class="stat"><b>${D.streak}</b><span>streak</span></div><div class="stat"><b>${D.best}</b><span>best streak</span></div></div>`;
+  let h=`${stat}<div class="card"><p style="margin-top:0">PV of operations <b>$${s.V0}M</b>. Up <b>${s.u.toFixed(2)}</b>, down <b>${s.d.toFixed(2)}</b>. Abandon at end of year 1 for <b>$${s.X}M</b>. Risk-free <b>${Math.round(s.rf*100)}%</b>, factor <b>${f4(s.fac)}</b>. Static NPV <b>${money(s.stat)}</b>.</p>
+  ${fields.map(f=>`<div class="field"><label>${f[1]}${f[2]?`<span class="hint">${f[2]}</span>`:''}</label><input id="ld_${f[0]}" inputmode="text" autocomplete="off" autocapitalize="off" placeholder="0.00" ${D.checked?'disabled':''}></div>`).join('')}
+  <div class="field"><label>Build it?</label><select id="ld_dec" ${D.checked?'disabled':''}><option value="">Pick</option><option value="y">Yes, build</option><option value="n">No</option></select></div>`;
+  if(!D.checked) h+=`<button class="btn primary block" data-drillcheck="1">Check</button>`;
+  else h+=`<div class="fb ${D.res.perfect?'ok':'bad'}"><b class="h">${D.res.perfect?'Perfect':D.res.right+' of 5 right'}</b>Nodes: ${f2(sol.Vu)} up (${sol.pu?'abandon, pays '+f2(sol.pu):'continue, pays 0'}), ${f2(sol.Vd)} down (${sol.pd?'abandon, pays '+f2(sol.pd):'continue, pays 0'}).<br>q = ${f4(sol.q)}. Option = [${f4(sol.q)}(${f2(sol.pu)}) + ${f4(1-sol.q)}(${f2(sol.pd)})] x ${f4(s.fac)} = <b>${f2(sol.opt)}</b>.<br>Total = ${s.stat} + ${f2(sol.opt)} = <b>${f2(sol.total)}</b>, therefore ${sol.total>=0?'build':'do not build'}.</div>
+  <button class="btn primary block" data-drillnext="1">Next problem</button>`;
+  return h+`</div>`;
+}
+function drillCheck(){
+  const D=S.lab.drill, sol=solveB(D.B);
+  const chk=[['ld_q',sol.q,0.003],['ld_pd',sol.pd,0.1],['ld_opt',sol.opt,0.08],['ld_tot',sol.total,0.1]];
+  let right=0;
+  chk.forEach(c=>{ const v=num(c[0]); const ok=!isNaN(v)&&Math.abs(v-c[1])<=c[2]; if(ok) right++; });
+  if(document.getElementById('ld_dec').value===(sol.total>=0?'y':'n')) right++;
+  const perfect=right===5;
+  D.n++; if(perfect){ D.full++; D.streak++; D.best=Math.max(D.best,D.streak);} else D.streak=0;
+  D.checked=true; D.res={right,perfect};
+  const keep={}; document.querySelectorAll('.field input,.field select').forEach(i=>keep[i.id]=i.value);
+  render(); Object.keys(keep).forEach(k=>{const i=document.getElementById(k); if(i) i.value=keep[k];});
+  chk.forEach(c=>{ const el=document.getElementById(c[0]); const v=num(c[0]); el.className=(!isNaN(v)&&Math.abs(v-c[1])<=c[2])?'ok':'bad'; });
+  const d=document.getElementById('ld_dec'); d.className=d.value===(sol.total>=0?'y':'n')?'ok':'bad';
+}
 function num(id){ const el=document.getElementById(id); if(!el) return NaN; const v=el.value.replace(/[$,M\s]/gi,'').replace(/[−–]/g,'-'); return v===''?NaN:parseFloat(v); }
 function labCheck(part){
   const L=S.lab; let fields, sol, dec, tol=0.1;
@@ -768,6 +801,8 @@ document.addEventListener('click',e=>{
   if(el=g('data-labpart')){ S.lab.part=el.dataset.labpart; S.lab.shown=false; render(); return; }
   if(el=g('data-labnew')){ labNew(); return; }
   if(el=g('data-labshow')){ S.lab.shown=true; const keep={}; document.querySelectorAll('.field input,.field select').forEach(i=>keep[i.id]=[i.value,i.className]); render(); Object.keys(keep).forEach(k=>{const i=document.getElementById(k); if(i){i.value=keep[k][0]; i.className=keep[k][1];}}); return; }
+  if(el=g('data-drillcheck')){ drillCheck(); return; }
+  if(el=g('data-drillnext')){ drillNew(); return; }
   if(el=g('data-labcheck')){ labCheck(el.dataset.labcheck); return; }
 });
 document.addEventListener('keydown',e=>{
