@@ -472,39 +472,54 @@ function genA(){
   for(let tries=0;tries<50;tries++){
     const N = pick([3,4]), dep = pick([6,8,10,12]), C = dep*N;
     const tax = pick([0.20,0.25,0.30,0.35]), r = pick([0.08,0.10,0.12]);
+    const life = Math.random()<0.4 ? N+rint(1,2) : N, depA = C/life;
+    const adjOn = Math.random()<0.45, adjAmt = rint(1,3);
     const rev=[], op=[], df=[];
-    for(let i=1;i<=N;i++){ const o=rint(6,15); op.push(o); rev.push(o+dep+rint(2,9)); df.push(r4(1/Math.pow(1+r,i))); }
+    for(let i=1;i<=N;i++){ const o=rint(6,15); op.push(o); rev.push(o+depA+(adjOn?adjAmt:0)+rint(2,9)); df.push(r4(1/Math.pow(1+r,i))); }
     const land = Math.random()<0.55 ? (()=>{const m=rint(3,8); return {mkt:m,hist:Math.max(1,m-rint(1,3))};})() : null;
     const debt = Math.random()<0.6 ? {amt:rint(10,25), rate:pick([0.05,0.06,0.07])} : null;
-    return {name:pick(NAMES), N, C, depBase:C, tax, r, rev, op, df, nwc:rint(1,4), salv:rint(2,8), land, sunk:{amt:rint(1,3), what:pick(["a feasibility study","market research","an engineering study"])}, debt};
+    const adj = adjOn ? pick([{what:"Sales stolen from an existing location cost the firm",},{what:"A new manager the project requires costs"}]) : null;
+    if(adj) adj.amt = Array(N).fill(adjAmt);
+    return {name:pick(NAMES), N, C, depBase:C, life: life!==N?life:undefined, adj, overhead: Math.random()<0.5?rint(1,3):0, tax, r, rev, op, df, nwc:rint(1,4), salv:rint(2,8), land, sunk:{amt:rint(1,3), what:pick(["a feasibility study","market research","an engineering study"])}, debt};
   }
 }
 const PACK_A = {
   brazos:{name:"Brazos Valley Cold Storage",N:4,C:46,depBase:46,tax:0.25,r:0.10,rev:[26,30,32,28],op:[12,14,15,13],df:[0.9091,0.8264,0.7513,0.6830],nwc:2,salv:8,land:{mkt:5,hist:3,yr:"2019"},sunk:{amt:1.5,what:"a feasibility study"},debt:{amt:20,rate:0.06}},
+  brewery:{name:"Cypress Creek Brewery Expansion",N:4,C:40,depBase:40,life:5,tax:0.25,r:0.10,rev:[30,34,36,32],op:[14,15,16,14],adj:{what:"Sales stolen from the existing taproom cost the firm",amt:[3,3,3,3]},overhead:1.8,df:[0.9091,0.8264,0.7513,0.6830],nwc:4,salv:14,land:null,sunk:{amt:2.5,what:"market research"},debt:null},
+  lng:{name:"Port Arthur LNG Terminal Unit",N:3,C:45,depBase:45,tax:0.30,r:0.12,rev:[40,44,36],op:[20,21,17],adj:{what:"A new operations manager required by the project costs",amt:[2,2,2]},overhead:2,df:[0.8929,0.7972,0.7118],nwc:5,salv:6,land:{mkt:7,hist:4,yr:"2021"},sunk:{amt:3,what:"an environmental study"},debt:{amt:25,rate:0.07}},
+  wind:{name:"Bayou Wind Farm",N:4,C:48,depBase:48,tax:0.21,r:0.08,rev:[28,31,33,30],op:[10,11,12,10],overhead:0,df:[0.9259,0.8573,0.7938,0.7350],nwc:3,salv:10,land:{mkt:6,hist:2,yr:"2018"},sunk:{amt:1,what:"a wind survey"},debt:{amt:20,rate:0.06}},
   gulf:{name:"Gulf Coast Data Center",N:3,C:30,depBase:30,tax:0.30,r:0.12,rev:[22,25,20],op:[10,11,9],df:[0.8929,0.7972,0.7118],nwc:3,salv:4,land:null,sunk:{amt:2,what:"R&D two years ago developing the cooling system"},debt:null}
 };
 function solveA(s){
-  const dep = s.depBase/s.N, rows=[]; let pvSum=0;
-  const salvAT = s.salv - s.tax*(s.salv-0);
+  const life = s.life||s.N, dep = s.depBase/life, rows=[]; let pvSum=0;
+  const book = s.depBase - dep*s.N;
+  const salvAT = s.salv - s.tax*(s.salv-book);
   for(let i=0;i<s.N;i++){
-    const ebit = s.rev[i]-s.op[i]-dep, nopat = ebit*(1-s.tax);
+    const adj = s.adj?s.adj.amt[i]:0;
+    const ebit = s.rev[i]-s.op[i]-adj-dep, nopat = ebit*(1-s.tax);
     const last = i===s.N-1;
     const fcf = nopat + dep + (last ? salvAT + s.nwc : 0);
     const pv = fcf*s.df[i]; pvSum+=pv;
-    rows.push({rev:s.rev[i],op:s.op[i],dep,ebit,nopat,salv:last?salvAT:0,nwcRec:last?s.nwc:0,fcf,df:s.df[i],pv});
+    rows.push({rev:s.rev[i],op:s.op[i],adj,dep,ebit,nopat,salv:last?salvAT:0,nwcRec:last?s.nwc:0,fcf,df:s.df[i],pv});
   }
   const t0 = -(s.C + (s.land?s.land.mkt:0) + s.nwc);
-  return {dep,rows,salvAT,t0,pvSum,npv:t0+pvSum};
+  return {dep,book,life,rows,salvAT,t0,pvSum,npv:t0+pvSum};
 }
 function genB(staticNPV){
   const V0 = rint(24,60), u = pick([1.2,1.3,1.4,1.5]), d = pick([0.6,0.65,0.7,0.75,0.8]);
   const rf = pick([0.04,0.05,0.06]);
   const Vu=V0*u, Vd=V0*d;
-  const X = Math.round(Vd + (Vu-Vd)*pick([0.35,0.45,0.55]));
+  const kind = pick(['n','n','n','n','both','low']);
+  let X = Math.round(Vd + (Vu-Vd)*pick([0.35,0.45,0.55]));
+  if(kind==='both') X = Math.ceil(Vu)+rint(1,3);
+  if(kind==='low') X = Math.max(1,Math.floor(Vd)-rint(1,3));
   return {V0,u,d,rf,fac:r4(1/(1+rf)),X,stat: staticNPV!=null?staticNPV:-(rint(5,50)/10), name:pick(NAMES)};
 }
 const PACK_B = {
   brazos:{name:"Brazos Valley Cold Storage",V0:50,u:1.30,d:0.70,rf:0.05,fac:0.9524,X:44,stat:-2.9},
+  brewery:{name:"Cypress Creek Brewery Expansion",V0:40,u:1.35,d:0.60,rf:0.05,fac:0.9524,X:30,stat:-2.1},
+  lng:{name:"Port Arthur LNG Terminal Unit",V0:60,u:1.25,d:0.55,rf:0.06,fac:0.9434,X:50,stat:-3.4},
+  wind:{name:"Bayou Wind Farm",V0:30,u:1.10,d:0.70,rf:0.04,fac:0.9615,X:35,stat:-4.2},
   gulf:{name:"Gulf Coast Data Center",V0:32,u:1.40,d:0.65,rf:0.06,fac:0.9434,X:26,stat:-0.87}
 };
 function solveB(s){
@@ -625,7 +640,7 @@ function labNew(){
 function money(x){ return (x<0?'-':'')+'$'+Math.abs(x).toFixed(Math.abs(x)%1===0?0:(Math.abs(x*10)%1===0?1:2))+'M'; }
 function renderLab(){
   const L=S.lab; if(!L.A) { L.A=genA(); L.B=genB(); }
-  const seg=`<div class="seg">${[['random','Random'],['brazos','Brazos'],['gulf','Gulf Coast']].map(x=>`<button class="${L.src===x[0]?'on':''}" data-labsrc="${x[0]}">${x[1]}</button>`).join('')}</div>
+  const seg=`<div class="seg">${[['random','Random'],['brazos','Brazos'],['gulf','Gulf Coast'],['brewery','Brewery'],['lng','LNG'],['wind','Wind']].map(x=>`<button class="${L.src===x[0]?'on':''}" data-labsrc="${x[0]}">${x[1]}</button>`).join('')}</div>
   <div class="seg">${[['A','Part A: DCF'],['B','Part B: Abandon']].map(x=>`<button class="${L.part===x[0]?'on':''}" data-labpart="${x[0]}">${x[1]}</button>`).join('')}</div>`;
   return `<h2>Question 2 Lab</h2>${seg}`+(L.part==='A'?labA():labB());
 }
@@ -637,7 +652,7 @@ function labA(){
   <tr><td>Operating costs</td>${s.op.map(v=>`<td class="n">${v.toFixed(1)}</td>`).join('')}</tr>
   <tr><td>Discount factor at ${Math.round(s.r*100)}%</td>${s.df.map(v=>`<td class="n">${f4(v)}</td>`).join('')}</tr></table></div>`;
   const dp = s.depBase!==s.C?'':'';
-  const text=`<p>${esc(s.name)} costs <b>$${s.C}M</b> at t = 0 and operates ${s.N} years. ${s.land?`It sits on land already owned, bought ${s.land.yr?'in '+s.land.yr+' ':'earlier '}for <b>$${s.land.hist}M</b>, sellable today for <b>$${s.land.mkt}M</b>. `:''}The firm spent <b>$${s.sunk.amt}M</b> last year on ${esc(s.sunk.what)}. NWC of <b>$${s.nwc}M</b> is funded at t = 0 and recovered at the end of year ${s.N}. Straight-line depreciation to zero over ${s.N} years on the facility${s.land?' (not the land)':''}. The facility sells for <b>$${s.salv}M</b> at the end of year ${s.N}. ${s.debt?`The project carries $${s.debt.amt}M of debt at ${Math.round(s.debt.rate*100)}%, giving <b>$${(s.debt.amt*s.debt.rate).toFixed(1)}M</b> of annual interest. `:''}Tax rate <b>${Math.round(s.tax*100)} percent</b>, cost of capital <b>${Math.round(s.r*100)} percent</b>.</p>`;
+  const text=`<p>${esc(s.name)} costs <b>$${s.C}M</b> at t = 0 and operates ${s.N} years. ${s.land?`It sits on land already owned, bought ${s.land.yr?'in '+s.land.yr+' ':'earlier '}for <b>$${s.land.hist}M</b>, sellable today for <b>$${s.land.mkt}M</b>. `:''}The firm spent <b>$${s.sunk.amt}M</b> last year on ${esc(s.sunk.what)}. NWC of <b>$${s.nwc}M</b> is funded at t = 0 and recovered at the end of year ${s.N}. Straight-line depreciation to zero over ${s.life||s.N} years on the facility${s.land?' (not the land)':''}${s.life&&s.life!==s.N?`, so it is NOT fully depreciated when sold at the end of year ${s.N}`:''}. The facility sells for <b>$${s.salv}M</b> at the end of year ${s.N}. ${s.debt?`The project carries $${s.debt.amt}M of debt at ${Math.round(s.debt.rate*100)}%, giving <b>$${(s.debt.amt*s.debt.rate).toFixed(1)}M</b> of annual interest. `:''}${s.adj?`${esc(s.adj.what)} <b>$${s.adj.amt[0]}M</b> a year before tax. `:''}${s.overhead?`Corporate allocates <b>$${s.overhead}M</b> a year of overhead to the project, but total corporate overhead is unchanged. `:''}Tax rate <b>${Math.round(s.tax*100)} percent</b>, cost of capital <b>${Math.round(s.r*100)} percent</b>.</p>`;
   const fields=[
     {k:'t0',l:'t = 0 cash flow',h:'investment + opp cost + NWC',a:sol.t0},
     {k:'f1',l:'FCF year 1',a:sol.rows[0].fcf},
@@ -653,6 +668,7 @@ function labA(){
     h+=`<div class="card"><h3 style="margin-top:0">Labeled build (copy this layout on the exam)</h3><div class="scroll"><table><tr><th>$M</th>${yrs.map(y=>`<th class="n">${y}</th>`).join('')}</tr>
     <tr><td>Revenue</td>${sol.rows.map(r=>`<td class="n">${f3(r.rev)}</td>`).join('')}</tr>
     <tr><td>- Operating costs</td>${sol.rows.map(r=>`<td class="n">${f3(r.op)}</td>`).join('')}</tr>
+    ${s.adj?`<tr><td>- ${s.adj.what.includes('manager')?'New hire':'Cannibalized profit'}</td>${sol.rows.map(r=>`<td class="n">${f3(r.adj)}</td>`).join('')}</tr>`:''}
     <tr><td>- Depreciation</td>${sol.rows.map(r=>`<td class="n">${f3(r.dep)}</td>`).join('')}</tr>
     <tr><td>= EBIT</td>${sol.rows.map(r=>`<td class="n">${f3(r.ebit)}</td>`).join('')}</tr>
     <tr><td>x (1 - ${s.tax})= NOPAT</td>${sol.rows.map(r=>`<td class="n">${f3(r.nopat)}</td>`).join('')}</tr>
@@ -662,13 +678,14 @@ function labA(){
     <tr class="tot"><td>= FCF</td>${sol.rows.map(r=>`<td class="n">${f3(r.fcf)}</td>`).join('')}</tr>
     <tr><td>x Discount factor</td>${sol.rows.map(r=>`<td class="n">${f4(r.df)}</td>`).join('')}</tr>
     <tr class="tot"><td>= PV</td>${sol.rows.map(r=>`<td class="n">${f3(r.pv)}</td>`).join('')}</tr></table></div>
-    <pre>Depreciation = ${s.depBase} / ${s.N} = ${sol.dep}
-After-tax salvage = ${s.salv} - ${s.tax}(${s.salv} - 0) = ${f3(sol.salvAT)}
+    <pre>Depreciation = ${s.depBase} / ${sol.life} = ${sol.dep}${sol.book?`
+Book value at sale = ${s.depBase} - ${sol.dep} x ${s.N} = ${f2(sol.book)}`:''}
+After-tax salvage = ${s.salv} - ${s.tax}(${s.salv} - ${f2(sol.book)}) = ${f3(sol.salvAT)}
 t = 0 = -${s.C} (facility)${s.land?` - ${s.land.mkt} (land at market)`:''} - ${s.nwc} (NWC) = ${f2(sol.t0)}
 PV of years 1 to ${s.N} = ${f3(sol.pvSum)}
 NPV = ${f3(sol.pvSum)} + (${f2(sol.t0)}) = ${f2(sol.npv)}</pre>
     <div class="fb note"><b class="h">Included / excluded</b>
-    <b>Excluded:</b> the $${s.sunk.amt}M ${esc(s.sunk.what)} (sunk)${s.debt?`, interest and debt (financing, in the discount rate; taxes computed unlevered)`:''}${s.land?`, and the $${s.land.hist}M historical price of the land (sunk).<br><b>Included:</b> the land at its $${s.land.mkt}M market value (opportunity cost). Omit it and NPV would be ${f2(sol.npv+s.land.mkt)}.`:'.'}
+    <b>Excluded:</b> the $${s.sunk.amt}M ${esc(s.sunk.what)} (sunk)${s.debt?`, interest and debt (financing, in the discount rate; taxes computed unlevered)`:''}${s.overhead?`, the allocated $${s.overhead}M overhead (not incremental)`:''}${s.adj?`.<br><b>Included as a cost:</b> the $${s.adj.amt[0]}M a year ${s.adj.what.includes('manager')?'new hire':'cannibalization'} (incremental)`:''}${s.land?`, and the $${s.land.hist}M historical price of the land (sunk).<br><b>Included:</b> the land at its $${s.land.mkt}M market value (opportunity cost). Omit it and NPV would be ${f2(sol.npv+s.land.mkt)}.`:'.'}
     </div>
     <div class="fb ${sol.npv>=0?'ok':'bad'}"><b class="h">Answer in words</b>NPV is ${sol.npv>=0?'positive':'negative'} ${money(Math.abs(sol.npv))}. ${sol.npv>=0?'Build it.':'On this analysis alone, do not build.'}</div></div>`;
   }
