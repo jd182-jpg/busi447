@@ -641,12 +641,12 @@ function money(x){ return (x<0?'-':'')+'$'+Math.abs(x).toFixed(Math.abs(x)%1===0
 function renderLab(){
   const L=S.lab; if(!L.A) { L.A=genA(); L.B=genB(); }
   const seg=`<div class="seg">${[['random','Random'],['brazos','Brazos'],['gulf','Gulf Coast'],['brewery','Brewery'],['lng','LNG'],['wind','Wind']].map(x=>`<button class="${L.src===x[0]?'on':''}" data-labsrc="${x[0]}">${x[1]}</button>`).join('')}</div>
-  <div class="seg">${[['A','Part A'],['B','Part B'],['D','B Drill']].map(x=>`<button class="${L.part===x[0]?'on':''}" data-labpart="${x[0]}">${x[1]}</button>`).join('')}</div>`;
+  <div class="seg">${[['A','Part A'],['B','Part B'],['E','A Drill'],['D','B Drill']].map(x=>`<button class="${L.part===x[0]?'on':''}" data-labpart="${x[0]}">${x[1]}</button>`).join('')}</div>`;
   if(L.part==='D' && !L.drill) drillNew(true);
-  return `<h2>Question 2 Lab</h2>${seg}`+(L.part==='A'?labA():L.part==='B'?labB():labDrill());
+  if(L.part==='E' && !L.drillA) drillANew(true);
+  return `<h2>Question 2 Lab</h2>${seg}`+(L.part==='A'?labA():L.part==='B'?labB():L.part==='E'?labDrillA():labDrill());
 }
-function labA(){
-  const s=S.lab.A, sol=solveA(s), L=S.lab;
+function scenA(s){
   const yrs=[...Array(s.N)].map((_,i)=>'Yr '+(i+1));
   const tbl=`<div class="scroll"><table><tr><th>$M</th>${yrs.map(y=>`<th class="n">${y}</th>`).join('')}</tr>
   <tr><td>Revenue</td>${s.rev.map(v=>`<td class="n">${v.toFixed(1)}</td>`).join('')}</tr>
@@ -654,6 +654,11 @@ function labA(){
   <tr><td>Discount factor at ${Math.round(s.r*100)}%</td>${s.df.map(v=>`<td class="n">${f4(v)}</td>`).join('')}</tr></table></div>`;
   const dp = s.depBase!==s.C?'':'';
   const text=`<p>${esc(s.name)} costs <b>$${s.C}M</b> at t = 0 and operates ${s.N} years. ${s.land?`It sits on land already owned, bought ${s.land.yr?'in '+s.land.yr+' ':'earlier '}for <b>$${s.land.hist}M</b>, sellable today for <b>$${s.land.mkt}M</b>. `:''}The firm spent <b>$${s.sunk.amt}M</b> last year on ${esc(s.sunk.what)}. NWC of <b>$${s.nwc}M</b> is funded at t = 0 and recovered at the end of year ${s.N}. Straight-line depreciation to zero over ${s.life||s.N} years on the facility${s.land?' (not the land)':''}${s.life&&s.life!==s.N?`, so it is NOT fully depreciated when sold at the end of year ${s.N}`:''}. The facility sells for <b>$${s.salv}M</b> at the end of year ${s.N}. ${s.debt?`The project carries $${s.debt.amt}M of debt at ${Math.round(s.debt.rate*100)}%, giving <b>$${(s.debt.amt*s.debt.rate).toFixed(1)}M</b> of annual interest. `:''}${s.adj?`${esc(s.adj.what)} <b>$${s.adj.amt[0]}M</b> a year before tax. `:''}${s.overhead?`Corporate allocates <b>$${s.overhead}M</b> a year of overhead to the project, but total corporate overhead is unchanged. `:''}Tax rate <b>${Math.round(s.tax*100)} percent</b>, cost of capital <b>${Math.round(s.r*100)} percent</b>.</p>`;
+  return {tbl,text,yrs};
+}
+function labA(){
+  const s=S.lab.A, sol=solveA(s), L=S.lab;
+  const {tbl,text,yrs}=scenA(s);
   const fields=[
     {k:'t0',l:'t = 0 cash flow',h:'investment + opp cost + NWC',a:sol.t0},
     {k:'f1',l:'FCF year 1',a:sol.rows[0].fcf},
@@ -753,6 +758,44 @@ function drillCheck(){
   chk.forEach(c=>{ const el=document.getElementById(c[0]); const v=num(c[0]); el.className=(!isNaN(v)&&Math.abs(v-c[1])<=c[2])?'ok':'bad'; });
   const d=document.getElementById('ld_dec'); d.className=d.value===(sol.total>=0?'y':'n')?'ok':'bad';
 }
+/* ---- Part A quick drill ---- */
+function drillANew(first){
+  const L=S.lab, old=L.drillA||{n:0,full:0,streak:0,best:0};
+  L.drillA={A:genA(),n:old.n,full:old.full,streak:old.streak,best:old.best,checked:false,res:null};
+  if(!first) render();
+}
+function labDrillA(){
+  const D=S.lab.drillA, s=D.A, sol=solveA(s), sc=scenA(s);
+  const fields=[['t0','t = 0 cash flow','investment + opp cost + NWC'],['sv','After-tax salvage','P - t(P - book)'],['f1','FCF year 1',''],['npv','NPV ($M)','']];
+  const stat=`<div class="stats"><div class="stat"><b>${D.full}/${D.n}</b><span>perfect</span></div><div class="stat"><b>${D.streak}</b><span>streak</span></div><div class="stat"><b>${D.best}</b><span>best streak</span></div></div>`;
+  let h=`${stat}<div class="card">${sc.text}${sc.tbl}
+  ${fields.map(f=>`<div class="field"><label>${f[1]}${f[2]?`<span class="hint">${f[2]}</span>`:''}</label><input id="le_${f[0]}" inputmode="text" autocomplete="off" autocapitalize="off" placeholder="0.00" ${D.checked?'disabled':''}></div>`).join('')}
+  <div class="field"><label>Build it?</label><select id="le_dec" ${D.checked?'disabled':''}><option value="">Pick</option><option value="y">Yes, build</option><option value="n">No</option></select></div>`;
+  if(!D.checked) h+=`<button class="btn primary block" data-drillacheck="1">Check</button>`;
+  else{
+    const r1=sol.rows[0];
+    h+=`<div class="fb ${D.res.perfect?'ok':'bad'}"><b class="h">${D.res.perfect?'Perfect':D.res.right+' of 5 right'}</b>
+    Depreciation ${f2(sol.dep)}${sol.book?`, book value at sale ${f2(sol.book)}`:''}. After-tax salvage = ${s.salv} - ${s.tax}(${s.salv} - ${f2(sol.book)}) = ${f2(sol.salvAT)}.<br>
+    Year 1: EBIT ${f2(r1.ebit)}, NOPAT ${f2(r1.nopat)}, FCF = ${f2(r1.fcf)}.<br>
+    t = 0: -${s.C}${s.land?` - ${s.land.mkt} (land at market)`:''} - ${s.nwc} = <b>${f2(sol.t0)}</b>.<br>
+    NPV = ${f2(sol.pvSum)} + (${f2(sol.t0)}) = <b>${f2(sol.npv)}</b>, therefore ${sol.npv>=0?'build':'do not build'}.</div>
+    <button class="btn primary block" data-drillanext="1">Next problem</button>`;
+  }
+  return h+`</div>`;
+}
+function drillACheck(){
+  const D=S.lab.drillA, sol=solveA(D.A);
+  const chk=[['le_t0',sol.t0],['le_sv',sol.salvAT],['le_f1',sol.rows[0].fcf],['le_npv',sol.npv]], dec=sol.npv>=0?'y':'n';
+  const okf=c=>{const v=num(c[0]);return !isNaN(v)&&Math.abs(v-c[1])<=0.1;};
+  let right=chk.filter(okf).length; const decOK=document.getElementById('le_dec').value===dec; if(decOK) right++;
+  const perfect=right===5;
+  D.n++; if(perfect){D.full++;D.streak++;D.best=Math.max(D.best,D.streak);} else D.streak=0;
+  D.checked=true; D.res={right,perfect};
+  const keep={}; document.querySelectorAll('.field input,.field select').forEach(i=>keep[i.id]=i.value);
+  render(); Object.keys(keep).forEach(k=>{const i=document.getElementById(k); if(i) i.value=keep[k];});
+  chk.forEach(c=>{document.getElementById(c[0]).className=okf(c)?'ok':'bad';});
+  document.getElementById('le_dec').className=decOK?'ok':'bad';
+}
 function num(id){ const el=document.getElementById(id); if(!el) return NaN; const v=el.value.replace(/[$,M\s]/gi,'').replace(/[−–]/g,'-'); return v===''?NaN:parseFloat(v); }
 function labCheck(part){
   const L=S.lab; let fields, sol, dec, tol=0.1;
@@ -801,6 +844,8 @@ document.addEventListener('click',e=>{
   if(el=g('data-labpart')){ S.lab.part=el.dataset.labpart; S.lab.shown=false; render(); return; }
   if(el=g('data-labnew')){ labNew(); return; }
   if(el=g('data-labshow')){ S.lab.shown=true; const keep={}; document.querySelectorAll('.field input,.field select').forEach(i=>keep[i.id]=[i.value,i.className]); render(); Object.keys(keep).forEach(k=>{const i=document.getElementById(k); if(i){i.value=keep[k][0]; i.className=keep[k][1];}}); return; }
+  if(el=g('data-drillacheck')){ drillACheck(); return; }
+  if(el=g('data-drillanext')){ drillANew(); return; }
   if(el=g('data-drillcheck')){ drillCheck(); return; }
   if(el=g('data-drillnext')){ drillNew(); return; }
   if(el=g('data-labcheck')){ labCheck(el.dataset.labcheck); return; }
